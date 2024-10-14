@@ -1,0 +1,762 @@
+[
+  {
+    "key": 1,
+    "name": "Jaffle Shop ",
+    "parent": 0,
+    "table": null,
+    "type": "Workbook",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 2,
+    "name": "Dashboard 1",
+    "parent": 1,
+    "table": null,
+    "type": "Dashboard",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 3,
+    "name": "JAFFLE_SHOP",
+    "parent": 2,
+    "table": null,
+    "type": "Datasource",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 4,
+    "name": "location",
+    "parent": 3,
+    "table": null,
+    "type": "Sheet",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 5,
+    "name": "Customer Id",
+    "parent": 4,
+    "table": null,
+    "type": "Field",
+    "formula": "",
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 6,
+    "name": "CUSTOMER_ID",
+    "parent": 5,
+    "table": "ORDERS",
+    "type": "Datasource Column",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 7,
+    "name": "CUSTOMER_ID",
+    "parent": 6,
+    "table": "ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Directly selected from the STG_ORDERS table"
+  },
+  {
+    "key": 8,
+    "name": "CUSTOMER_ID",
+    "parent": 7,
+    "table": "STG_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The CUSTOMER_ID column is a rename of the CUSTOMER column from the RAW_ORDERS table."
+  },
+  {
+    "key": 9,
+    "name": "CUSTOMER",
+    "parent": 8,
+    "table": "RAW_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Reasoning not available"
+  },
+  {
+    "key": 10,
+    "name": "Location Name",
+    "parent": 4,
+    "table": null,
+    "type": "Field",
+    "formula": "",
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 11,
+    "name": "LOCATION_NAME",
+    "parent": 10,
+    "table": "LOCATIONS",
+    "type": "Datasource Column",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 12,
+    "name": "LOCATION_NAME",
+    "parent": 11,
+    "table": "LOCATIONS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The LOCATION_NAME column is directly selected from the STG_LOCATIONS table without any transformations."
+  },
+  {
+    "key": 13,
+    "name": "LOCATION_NAME",
+    "parent": 12,
+    "table": "STG_LOCATIONS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The NAME column from the RAW_STORES table is simply renamed to LOCATION_NAME."
+  },
+  {
+    "key": 14,
+    "name": "NAME",
+    "parent": 13,
+    "table": "RAW_STORES",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Reasoning not available"
+  },
+  {
+    "key": 15,
+    "name": "Order Total",
+    "parent": 4,
+    "table": null,
+    "type": "Field",
+    "formula": "",
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 16,
+    "name": "ORDER_TOTAL",
+    "parent": 15,
+    "table": "ORDERS",
+    "type": "Datasource Column",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 17,
+    "name": "ORDER_TOTAL",
+    "parent": 16,
+    "table": "ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Directly selected from the STG_ORDERS table"
+  },
+  {
+    "key": 18,
+    "name": "ORDER_TOTAL",
+    "parent": 17,
+    "table": "STG_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The ORDER_TOTAL column is transformed from the ORDER_TOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars."
+  },
+  {
+    "key": 19,
+    "name": "ORDER_TOTAL",
+    "parent": 18,
+    "table": "RAW_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Reasoning not available"
+  },
+  {
+    "key": 20,
+    "name": "loction and tax",
+    "parent": 3,
+    "table": null,
+    "type": "Sheet",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 21,
+    "name": "Total Lifetime spend",
+    "parent": 20,
+    "table": null,
+    "type": "Field",
+    "formula": "[Lifetime Spend]+[Lifetime Tax Paid]",
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 22,
+    "name": "Lifetime Spend",
+    "parent": 21,
+    "table": null,
+    "type": "Field",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 23,
+    "name": "LIFETIME_SPEND",
+    "parent": 22,
+    "table": "CUSTOMERS",
+    "type": "Datasource Column",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 24,
+    "name": "LIFETIME_SPEND",
+    "parent": 23,
+    "table": "CUSTOMERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The lifetime spend is calculated by summing up the order total for each customer in the ORDERS table."
+  },
+  {
+    "key": 25,
+    "name": "ORDER_TOTAL",
+    "parent": 24,
+    "table": "ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Directly selected from the STG_ORDERS table"
+  },
+  {
+    "key": 26,
+    "name": "ORDER_TOTAL",
+    "parent": 25,
+    "table": "STG_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The ORDER_TOTAL column is transformed from the ORDER_TOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars."
+  },
+  {
+    "key": 27,
+    "name": "ORDER_TOTAL",
+    "parent": 26,
+    "table": "RAW_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Reasoning not available"
+  },
+  {
+    "key": 28,
+    "name": "Lifetime Tax Paid",
+    "parent": 21,
+    "table": null,
+    "type": "Field",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 29,
+    "name": "LIFETIME_TAX_PAID",
+    "parent": 28,
+    "table": "CUSTOMERS",
+    "type": "Datasource Column",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 30,
+    "name": "LIFETIME_TAX_PAID",
+    "parent": 29,
+    "table": "CUSTOMERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The lifetime tax paid is calculated by summing up the tax paid for each customer in the ORDERS table."
+  },
+  {
+    "key": 31,
+    "name": "TAX_PAID",
+    "parent": 30,
+    "table": "ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Directly selected from the STG_ORDERS table"
+  },
+  {
+    "key": 32,
+    "name": "TAX_PAID",
+    "parent": 31,
+    "table": "STG_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The TAX_PAID column is transformed from the TAX_PAID column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars."
+  },
+  {
+    "key": 33,
+    "name": "TAX_PAID",
+    "parent": 32,
+    "table": "RAW_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Reasoning not available"
+  },
+  {
+    "key": 34,
+    "name": "Lifetime Tax Paid",
+    "parent": 20,
+    "table": null,
+    "type": "Field",
+    "formula": "",
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 35,
+    "name": "LIFETIME_TAX_PAID",
+    "parent": 34,
+    "table": "CUSTOMERS",
+    "type": "Datasource Column",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 36,
+    "name": "LIFETIME_TAX_PAID",
+    "parent": 35,
+    "table": "CUSTOMERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The lifetime tax paid is calculated by summing up the tax paid for each customer in the ORDERS table."
+  },
+  {
+    "key": 37,
+    "name": "TAX_PAID",
+    "parent": 36,
+    "table": "ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Directly selected from the STG_ORDERS table"
+  },
+  {
+    "key": 38,
+    "name": "TAX_PAID",
+    "parent": 37,
+    "table": "STG_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The TAX_PAID column is transformed from the TAX_PAID column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars."
+  },
+  {
+    "key": 39,
+    "name": "TAX_PAID",
+    "parent": 38,
+    "table": "RAW_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Reasoning not available"
+  },
+  {
+    "key": 40,
+    "name": "Location Name",
+    "parent": 20,
+    "table": null,
+    "type": "Field",
+    "formula": "",
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 41,
+    "name": "LOCATION_NAME",
+    "parent": 40,
+    "table": "LOCATIONS",
+    "type": "Datasource Column",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 42,
+    "name": "LOCATION_NAME",
+    "parent": 41,
+    "table": "LOCATIONS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The LOCATION_NAME column is directly selected from the STG_LOCATIONS table without any transformations."
+  },
+  {
+    "key": 43,
+    "name": "LOCATION_NAME",
+    "parent": 42,
+    "table": "STG_LOCATIONS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The NAME column from the RAW_STORES table is simply renamed to LOCATION_NAME."
+  },
+  {
+    "key": 44,
+    "name": "NAME",
+    "parent": 43,
+    "table": "RAW_STORES",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Reasoning not available"
+  },
+  {
+    "key": 45,
+    "name": "cust type",
+    "parent": 3,
+    "table": null,
+    "type": "Sheet",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 46,
+    "name": "Customer Type",
+    "parent": 45,
+    "table": null,
+    "type": "Field",
+    "formula": "",
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 47,
+    "name": "CUSTOMER_TYPE",
+    "parent": 46,
+    "table": "CUSTOMERS",
+    "type": "Datasource Column",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 48,
+    "name": "CUSTOMER_TYPE",
+    "parent": 47,
+    "table": "CUSTOMERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The customer type is determined by checking if the customer has more than one order in the ORDERS table. If they do, they are classified as a returning customer, otherwise they are classified as a new customer."
+  },
+  {
+    "key": 49,
+    "name": "ORDER_ID",
+    "parent": 48,
+    "table": "ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Directly selected from the STG_ORDERS table"
+  },
+  {
+    "key": 50,
+    "name": "ORDER_ID",
+    "parent": 49,
+    "table": "STG_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The ORDER_ID column is simply a rename of the ID column from the RAW_ORDERS table."
+  },
+  {
+    "key": 51,
+    "name": "ID",
+    "parent": 50,
+    "table": "RAW_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Reasoning not available"
+  },
+  {
+    "key": 52,
+    "name": "Total Lifetime spend",
+    "parent": 45,
+    "table": null,
+    "type": "Field",
+    "formula": "[Lifetime Spend]+[Lifetime Tax Paid]",
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 53,
+    "name": "Lifetime Spend",
+    "parent": 52,
+    "table": null,
+    "type": "Field",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 54,
+    "name": "LIFETIME_SPEND",
+    "parent": 53,
+    "table": "CUSTOMERS",
+    "type": "Datasource Column",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 55,
+    "name": "LIFETIME_SPEND",
+    "parent": 54,
+    "table": "CUSTOMERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The lifetime spend is calculated by summing up the order total for each customer in the ORDERS table."
+  },
+  {
+    "key": 56,
+    "name": "ORDER_TOTAL",
+    "parent": 55,
+    "table": "ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Directly selected from the STG_ORDERS table"
+  },
+  {
+    "key": 57,
+    "name": "ORDER_TOTAL",
+    "parent": 56,
+    "table": "STG_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The ORDER_TOTAL column is transformed from the ORDER_TOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars."
+  },
+  {
+    "key": 58,
+    "name": "ORDER_TOTAL",
+    "parent": 57,
+    "table": "RAW_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Reasoning not available"
+  },
+  {
+    "key": 59,
+    "name": "Lifetime Tax Paid",
+    "parent": 52,
+    "table": null,
+    "type": "Field",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 60,
+    "name": "LIFETIME_TAX_PAID",
+    "parent": 59,
+    "table": "CUSTOMERS",
+    "type": "Datasource Column",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 61,
+    "name": "LIFETIME_TAX_PAID",
+    "parent": 60,
+    "table": "CUSTOMERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The lifetime tax paid is calculated by summing up the tax paid for each customer in the ORDERS table."
+  },
+  {
+    "key": 62,
+    "name": "TAX_PAID",
+    "parent": 61,
+    "table": "ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Directly selected from the STG_ORDERS table"
+  },
+  {
+    "key": 63,
+    "name": "TAX_PAID",
+    "parent": 62,
+    "table": "STG_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The TAX_PAID column is transformed from the TAX_PAID column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars."
+  },
+  {
+    "key": 64,
+    "name": "TAX_PAID",
+    "parent": 63,
+    "table": "RAW_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Reasoning not available"
+  },
+  {
+    "key": 65,
+    "name": "Lifetime Spend",
+    "parent": 45,
+    "table": null,
+    "type": "Field",
+    "formula": "",
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 66,
+    "name": "LIFETIME_SPEND",
+    "parent": 65,
+    "table": "CUSTOMERS",
+    "type": "Datasource Column",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 67,
+    "name": "LIFETIME_SPEND",
+    "parent": 66,
+    "table": "CUSTOMERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The lifetime spend is calculated by summing up the order total for each customer in the ORDERS table."
+  },
+  {
+    "key": 68,
+    "name": "ORDER_TOTAL",
+    "parent": 67,
+    "table": "ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Directly selected from the STG_ORDERS table"
+  },
+  {
+    "key": 69,
+    "name": "ORDER_TOTAL",
+    "parent": 68,
+    "table": "STG_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The ORDER_TOTAL column is transformed from the ORDER_TOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars."
+  },
+  {
+    "key": 70,
+    "name": "ORDER_TOTAL",
+    "parent": 69,
+    "table": "RAW_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Reasoning not available"
+  },
+  {
+    "key": 71,
+    "name": "Lifetime Tax Paid",
+    "parent": 45,
+    "table": null,
+    "type": "Field",
+    "formula": "",
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 72,
+    "name": "LIFETIME_TAX_PAID",
+    "parent": 71,
+    "table": "CUSTOMERS",
+    "type": "Datasource Column",
+    "formula": null,
+    "column_description": null,
+    "reasoning": null
+  },
+  {
+    "key": 73,
+    "name": "LIFETIME_TAX_PAID",
+    "parent": 72,
+    "table": "CUSTOMERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The lifetime tax paid is calculated by summing up the tax paid for each customer in the ORDERS table."
+  },
+  {
+    "key": 74,
+    "name": "TAX_PAID",
+    "parent": 73,
+    "table": "ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Directly selected from the STG_ORDERS table"
+  },
+  {
+    "key": 75,
+    "name": "TAX_PAID",
+    "parent": 74,
+    "table": "STG_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "The TAX_PAID column is transformed from the TAX_PAID column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars."
+  },
+  {
+    "key": 76,
+    "name": "TAX_PAID",
+    "parent": 75,
+    "table": "RAW_ORDERS",
+    "type": "Database",
+    "formula": null,
+    "column_description": "Description not available",
+    "reasoning": "Reasoning not available"
+  }
+]

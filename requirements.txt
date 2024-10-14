@@ -1,0 +1,7 @@
+openai
+streamlit
+google.generativeai
+python-dotenv
+plotly
+graphviz
+snowflake-connector-python

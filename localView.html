@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lineage Visualization</title>
+  <script src="https://unpkg.com/gojs@3.0.11/release/go.js"></script>
+  <style>
+    /* Container for local diagram and filter */
+    #localDiagramContainer {
+      position: relative;
+      width: 100%;
+      height: 50vh;
+      border: 1px solid black;
+    }
+
+    #localDiagram {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Style for the level control inside local diagram */
+    #levelControl {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      z-index: 10;
+    }
+
+    /* Style for full diagram */
+    #fullDiagramContainer {
+      position: relative;
+      width: 100%;
+      height: 50vh;
+      border: 1px solid black;
+    }
+
+    #fullDiagram {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Legend styles */
+    #legend {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      z-index: 10;
+    }
+    #legend p {
+      margin: 5px 0;
+    }
+    #legend span {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Combined Lineage Visualization</h1>
+
+  <!-- Full diagram container with legend inside -->
+  <div id="fullDiagramContainer">
+    <div id="fullDiagram"></div>
+    <!-- Legend inside the full diagram -->
+    <div id="legend">
+      <p><span style="background-color: lightblue;"></span> UI Side</p>
+      <p><span style="background-color: lightgreen;"></span> Database Side</p>
+    </div>
+  </div>
+
+  <!-- Local diagram container with filter control inside -->
+  <div id="localDiagramContainer">
+    <div id="localDiagram"></div>
+
+    <!-- Level control inside local diagram container -->
+    <div id="levelControl">
+      <label for="levelSelect">Nodes to show:</label>
+      <input type="number" id="levelSelect" name="levelSelect" value="3" min="1" max="10" onchange="updateLocalDiagram()">
+    </div>
+  </div>
+
+  <script>
+    let myFullDiagram, myLocalDiagram, highlighter;
+    let currentLevel = 3; // Default number of levels to show
+    let expandedStates = new Map(); // To maintain expanded state across updates
+
+    function init() {
+      const $ = go.GraphObject.make;
+
+      // Full tree diagram (vertical)
+      myFullDiagram = $(go.Diagram, 'fullDiagram', {
+        initialAutoScale: go.AutoScale.Uniform,
+        contentAlignment: go.Spot.Center,
+        isReadOnly: true,
+        layout: $(go.TreeLayout, { angle: 90, sorting: go.TreeSorting.Ascending }),
+        maxSelectionCount: 1
+      });
+
+      // Add the ChangedSelection listener here
+      myFullDiagram.addDiagramListener('ChangedSelection', showLocalOnFullClick);
+
+      // Local diagram to zoom in on specific parts (horizontal)
+      myLocalDiagram = $(go.Diagram, 'localDiagram', {
+        initialAutoScale: go.AutoScale.UniformToFill,
+        contentAlignment: go.Spot.Center,
+        isReadOnly: false, // Allow interactions
+        allowSelect: false, // Prevent selection
+        layout: $(go.TreeLayout, { angle: 0, sorting: go.TreeSorting.Ascending })
+      });
+
+      // Node template for the full diagram
+      const myNodeTemplate = $(go.Node, 'Auto',
+        $(go.Shape, 'Rectangle', { stroke: 'black', fill: 'white' }, new go.Binding('fill', 'color')),
+        $(go.Panel, 'Vertical',
+          // Conditional Panels based on node type
+          new go.Binding('itemArray', '', function(data) {
+            const items = [];
+
+            // Common attribute: Type
+            items.push({ label: 'Type:', value: data.type });
+
+            // Attributes based on node type
+            if (['Workbook', 'Dashboard', 'Datasource', 'Sheet', 'Field'].includes(data.type)) {
+              items.unshift({ label: 'Name:', value: data.name });
+            } else if (data.type === 'Datasource Column' || data.type === 'Database') {
+              items.unshift({ label: 'Column:', value: data.name });
+              items.push({ label: 'Table:', value: data.table || 'N/A' });
+            }
+
+            return items;
+          }),
+          {
+            itemTemplate:
+              $(go.Panel, 'Horizontal',
+                $(go.TextBlock, { margin: new go.Margin(2, 0, 2, 5), font: 'bold 12pt sans-serif' },
+                  new go.Binding('text', 'label')),
+                $(go.TextBlock, { margin: new go.Margin(2, 5, 2, 0), font: 'normal 12pt sans-serif' },
+                  new go.Binding('text', 'value'))
+              )
+          }
+        )
+      );
+      myFullDiagram.nodeTemplate = myNodeTemplate;
+
+      // Node template for the local diagram with expand/collapse functionality
+      const myLocalNodeTemplate = $(go.Node, 'Auto',
+        {
+          isActionable: true,
+          selectionAdorned: false, // Prevent selection adornments
+          click: function(e, node) {
+            e.diagram.startTransaction('toggle expanded');
+            const key = node.data.key.toString();
+            const expanded = !expandedStates.get(key);
+            expandedStates.set(key, expanded);
+            node.data.expanded = expanded;
+            e.diagram.model.updateTargetBindings(node.data);
+            e.diagram.commitTransaction('toggle expanded');
+          }
+        },
+        $(go.Shape, 'Rectangle', {
+          stroke: 'black',
+          fill: 'white'
+        }, new go.Binding('fill', 'color')),
+        $(go.Panel, 'Table',
+          {
+            defaultAlignment: go.Spot.Left
+          },
+          // Define column definitions
+          $(go.RowColumnDefinition, { column: 0, width: 160, alignment: go.Spot.Right }),
+          $(go.RowColumnDefinition, { column: 1, width: 200, alignment: go.Spot.Left }),
+          // Row 0: Name or Column (based on node type)
+          $(go.TextBlock, {
+            row: 0, column: 0, margin: new go.Margin(2, 0, 2, 10), font: 'bold 12pt sans-serif',
+            width: 160,
+            wrap: go.TextBlock.WrapDesiredSize,
+            isMultiline: true,
+            alignment: go.Spot.Right
+          }, new go.Binding('text', '', function(data) {
+            return data.type === 'Datasource Column' || data.type === 'Database' ? 'Column:' : 'Name:';
+          })),
+          $(go.TextBlock, {
+            row: 0, column: 1, margin: new go.Margin(2, 10, 2, 0), font: 'normal 12pt sans-serif',
+            width: 200,
+            wrap: go.TextBlock.WrapDesiredSize,
+            isMultiline: true
+          }, new go.Binding('text', 'name', function(name) {
+            return name || 'Unknown';
+          })),
+          // Row 1: Type
+          $(go.TextBlock, {
+            row: 1, column: 0, margin: new go.Margin(2, 0, 2, 10), font: 'bold 12pt sans-serif',
+            width: 160,
+            wrap: go.TextBlock.WrapDesiredSize,
+            isMultiline: true,
+            alignment: go.Spot.Right
+          }, 'Type:'),
+          $(go.TextBlock, {
+            row: 1, column: 1, margin: new go.Margin(2, 10, 2, 0), font: 'normal 12pt sans-serif',
+            width: 200,
+            wrap: go.TextBlock.WrapDesiredSize,
+            isMultiline: true
+          }, new go.Binding('text', 'type', function(type) {
+            return type || 'Unknown Type';
+          })),
+          // Row 2: Table (only for Datasource Column and Database)
+          $(go.TextBlock, {
+            row: 2, column: 0, margin: new go.Margin(2, 0, 2, 10), font: 'bold 12pt sans-serif',
+            width: 160,
+            wrap: go.TextBlock.WrapDesiredSize,
+            isMultiline: true,
+            alignment: go.Spot.Right,
+            visible: false
+          }, 'Table:', new go.Binding('visible', '', function(data) {
+            return data.type === 'Datasource Column' || data.type === 'Database';
+          })),
+          $(go.TextBlock, {
+            row: 2, column: 1, margin: new go.Margin(2, 10, 2, 0), font: 'normal 12pt sans-serif',
+            width: 200,
+            wrap: go.TextBlock.WrapDesiredSize,
+            isMultiline: true,
+            visible: false
+          }, new go.Binding('text', 'table', function(table) {
+            return table || 'N/A';
+          }), new go.Binding('visible', '', function(data) {
+            return data.type === 'Datasource Column' || data.type === 'Database';
+          })),
+          // Expanded Panel
+          $(go.Panel, 'Table', {
+            row: 3, columnSpan: 2, name: 'EXPANDED_PANEL', visible: false, defaultAlignment: go.Spot.Left
+          },
+            // Define column definitions for expanded panel
+            $(go.RowColumnDefinition, { column: 0, width: 160, alignment: go.Spot.Right }),
+            $(go.RowColumnDefinition, { column: 1, width: 200, alignment: go.Spot.Left }),
+            new go.Binding('visible', 'expanded'),
+            // Row 0: Formula
+            $(go.TextBlock, {
+              row: 0, column: 0, margin: new go.Margin(2, 0, 2, 10), font: 'bold 12pt sans-serif',
+              width: 160, wrap: go.TextBlock.WrapDesiredSize, isMultiline: true,
+              alignment: go.Spot.Right
+            }, 'Formula:'),
+            $(go.TextBlock, {
+              row: 0, column: 1, margin: new go.Margin(2, 10, 2, 0), font: 'normal 12pt sans-serif',
+              width: 200, wrap: go.TextBlock.WrapDesiredSize, isMultiline: true
+            }, new go.Binding('text', 'formula')),
+            // Row 1: Reasoning
+            $(go.TextBlock, {
+              row: 1, column: 0, margin: new go.Margin(2, 0, 2, 10), font: 'bold 12pt sans-serif',
+              width: 160, wrap: go.TextBlock.WrapDesiredSize, isMultiline: true,
+              alignment: go.Spot.Right
+            }, 'Reasoning:'),
+            $(go.TextBlock, {
+              row: 1, column: 1, margin: new go.Margin(2, 10, 2, 0), font: 'normal 12pt sans-serif',
+              width: 200, wrap: go.TextBlock.WrapDesiredSize, isMultiline: true
+            }, new go.Binding('text', 'reasoning')),
+            // Row 2: Description
+            $(go.TextBlock, {
+              row: 2, column: 0, margin: new go.Margin(2, 0, 2, 10), font: 'bold 12pt sans-serif',
+              width: 160, wrap: go.TextBlock.WrapDesiredSize, isMultiline: true,
+              alignment: go.Spot.Right
+            }, 'Description:'),
+            $(go.TextBlock, {
+              row: 2, column: 1, margin: new go.Margin(2, 10, 2, 0), font: 'normal 12pt sans-serif',
+              width: 200, wrap: go.TextBlock.WrapDesiredSize, isMultiline: true
+            }, new go.Binding('text', 'column_description'))
+          ),
+          // Row for Expand/Collapse indicator
+          $(go.TextBlock, {
+            row: 4, columnSpan: 2, margin: new go.Margin(2, 0, 2, 10), font: 'italic 10pt sans-serif', alignment: go.Spot.Right
+          }, new go.Binding('text', '', function(data) {
+            return data.expanded ? '[Click to Collapse]' : '[Click to Expand]';
+          }))
+        )
+      );
+      myLocalDiagram.nodeTemplate = myLocalNodeTemplate;
+
+      // Link template: Define the appearance of links
+      const myLinkTemplate = $(go.Link, { routing: go.Routing.Normal, selectable: false })
+        .add($(go.Shape, { strokeWidth: 1 }));
+      myFullDiagram.linkTemplate = myLinkTemplate;
+      myLocalDiagram.linkTemplate = myLinkTemplate;
+
+      // Highlight part for the full diagram
+      highlighter = $(go.Part, 'Auto', { layerName: 'Grid', locationSpot: go.Spot.Center })
+        .add($(go.Shape, 'Ellipse', {
+          fill: $(go.Brush, 'Radial', { 0.0: 'gold', 0.5: 'gold', 1.0: 'white' }),
+          stroke: null,
+          desiredSize: new go.Size(300, 300)
+        }));
+      myFullDiagram.add(highlighter);
+
+      // Load data and initialize the diagrams
+      setupDiagram();
+    }
+
+    // Synchronize the local diagram with the selected node in the full diagram
+    function showLocalOnFullClick() {
+      const selectedNode = myFullDiagram.selection.first();
+      if (selectedNode) {
+        updateLocalDiagram(); // Update based on user selection
+        highlighter.location = selectedNode.location; // highlight the selected node
+      }
+    }
+
+    // Update the local diagram based on user-selected number of levels
+    function updateLocalDiagram() {
+      const selectedNode = myFullDiagram.selection.first();
+      if (selectedNode) {
+        const levelInput = document.getElementById('levelSelect');
+        currentLevel = parseInt(levelInput.value); // Get the selected level
+
+        const nearby = selectedNode.findTreeParts(currentLevel);
+        const nodeDataArray = [];
+        const nodeKeys = new Set();
+
+        nearby.each((part) => {
+          if (part instanceof go.Node) {
+            let nodeData = Object.assign({}, part.data);
+            const key = nodeData.key.toString();
+            nodeData.key = key; // Ensure key is a string
+            nodeData.expanded = expandedStates.get(key) || false;
+            nodeDataArray.push(nodeData);
+            nodeKeys.add(key);
+          }
+        });
+
+        // Fix parent properties
+        nodeDataArray.forEach((nodeData) => {
+          if (nodeData.parent && !nodeKeys.has(nodeData.parent.toString())) {
+            // If the parent is not in the nodeKeys set, remove the parent property
+            delete nodeData.parent;
+          } else if (nodeData.parent) {
+            // Ensure parent is a string
+            nodeData.parent = nodeData.parent.toString();
+          }
+        });
+
+        myLocalDiagram.model = new go.TreeModel(nodeDataArray);
+      }
+    }
+
+    // Validate node data to avoid "null" key or parent issues
+    function validateNodeData(nodeDataArray) {
+      nodeDataArray.forEach(node => {
+        if (node.key === null || node.key === undefined) {
+          node.key = generateUniqueKey();
+        }
+        node.key = node.key.toString(); // Ensure key is a string
+        if (node.parent === null || node.parent === undefined || node.parent === 0) {
+          // Remove the parent property if it's null, undefined, or 0
+          delete node.parent;
+        } else {
+          node.parent = node.parent.toString(); // Ensure parent is a string
+        }
+      });
+      return nodeDataArray;
+    }
+
+    // Generate a unique key if the node doesn't have one
+    function generateUniqueKey() {
+      return Math.random().toString(36).substr(2, 9);
+    }
+
+    // Load and set up the diagrams with real data
+    function setupDiagram() {
+      const filePath = './transformed_lineage.json';
+
+      fetch(filePath)
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to load transformed_lineage.json');
+          return response.json();
+        })
+        .then(data => {
+          // Segregate UI and Database hierarchies with colors
+          const validatedData = validateNodeData(data).map(node => {
+            if (node.type === 'Database') {
+              node.color = 'lightgreen'; // Database side
+            } else {
+              node.color = 'lightblue'; // UI side
+            }
+            return node;
+          });
+
+          myFullDiagram.model = new go.TreeModel(validatedData);
+
+          // Automatically select the first node once the layout is done
+          myFullDiagram.addDiagramListener('InitialLayoutCompleted', () => {
+            const firstNode = myFullDiagram.findPartForKey(validatedData[0].key);
+            if (firstNode) firstNode.isSelected = true;
+            showLocalOnFullClick();
+          });
+        })
+        .catch(error => {
+          console.error('Error loading or processing the file:', error);
+        });
+    }
+
+    // Initialize the diagrams when the page loads
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

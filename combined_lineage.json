@@ -1,0 +1,653 @@
+{
+    "workbooks": [
+        {
+            "name": "Jaffle Shop ",
+            "dashboards": [
+                {
+                    "name": "Dashboard 1",
+                    "upstreamDatasources": [
+                        {
+                            "name": "JAFFLE_SHOP",
+                            "sheets": [
+                                {
+                                    "name": "location",
+                                    "worksheetFields": [],
+                                    "upstreamFields": [
+                                        {
+                                            "name": "Customer Id",
+                                            "upstreamColumns": [
+                                                {
+                                                    "name": "CUSTOMER_ID",
+                                                    "upstreamDatabases": [
+                                                        {
+                                                            "name": "JAFFLE_SHOP"
+                                                        }
+                                                    ],
+                                                    "upstreamTables": [
+                                                        {
+                                                            "name": "ORDERS"
+                                                        }
+                                                    ],
+                                                    "database_lineage": {
+                                                        "model": "ORDERS",
+                                                        "column": "CUSTOMER_ID",
+                                                        "column Description": "Description not available",
+                                                        "reasoning": "Directly selected from the STG_ORDERS table",
+                                                        "upstream_models": [
+                                                            {
+                                                                "model": "STG_ORDERS",
+                                                                "column": "CUSTOMER_ID",
+                                                                "column Description": "Description not available",
+                                                                "reasoning": "The CUSTOMER_ID column is a rename of the CUSTOMER column from the RAW_ORDERS table.",
+                                                                "upstream_models": [
+                                                                    {
+                                                                        "model": "RAW_ORDERS",
+                                                                        "column": "CUSTOMER",
+                                                                        "column Description": "Description not available",
+                                                                        "reasoning": "Reasoning not available",
+                                                                        "upstream_models": []
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "formula": ""
+                                        },
+                                        {
+                                            "name": "Location Name",
+                                            "upstreamColumns": [
+                                                {
+                                                    "name": "LOCATION_NAME",
+                                                    "upstreamDatabases": [
+                                                        {
+                                                            "name": "JAFFLE_SHOP"
+                                                        }
+                                                    ],
+                                                    "upstreamTables": [
+                                                        {
+                                                            "name": "LOCATIONS"
+                                                        }
+                                                    ],
+                                                    "database_lineage": {
+                                                        "model": "LOCATIONS",
+                                                        "column": "LOCATION_NAME",
+                                                        "column Description": "Description not available",
+                                                        "reasoning": "The LOCATION_NAME column is directly selected from the STG_LOCATIONS table without any transformations.",
+                                                        "upstream_models": [
+                                                            {
+                                                                "model": "STG_LOCATIONS",
+                                                                "column": "LOCATION_NAME",
+                                                                "column Description": "Description not available",
+                                                                "reasoning": "The NAME column from the RAW_STORES table is simply renamed to LOCATION_NAME.",
+                                                                "upstream_models": [
+                                                                    {
+                                                                        "model": "RAW_STORES",
+                                                                        "column": "NAME",
+                                                                        "column Description": "Description not available",
+                                                                        "reasoning": "Reasoning not available",
+                                                                        "upstream_models": []
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "formula": ""
+                                        },
+                                        {
+                                            "name": "Order Total",
+                                            "upstreamColumns": [
+                                                {
+                                                    "name": "ORDER_TOTAL",
+                                                    "upstreamDatabases": [
+                                                        {
+                                                            "name": "JAFFLE_SHOP"
+                                                        }
+                                                    ],
+                                                    "upstreamTables": [
+                                                        {
+                                                            "name": "ORDERS"
+                                                        }
+                                                    ],
+                                                    "database_lineage": {
+                                                        "model": "ORDERS",
+                                                        "column": "ORDER_TOTAL",
+                                                        "column Description": "Description not available",
+                                                        "reasoning": "Directly selected from the STG_ORDERS table",
+                                                        "upstream_models": [
+                                                            {
+                                                                "model": "STG_ORDERS",
+                                                                "column": "ORDER_TOTAL",
+                                                                "column Description": "Description not available",
+                                                                "reasoning": "The ORDER_TOTAL column is transformed from the ORDER_TOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                                                                "upstream_models": [
+                                                                    {
+                                                                        "model": "RAW_ORDERS",
+                                                                        "column": "ORDER_TOTAL",
+                                                                        "column Description": "Description not available",
+                                                                        "reasoning": "Reasoning not available",
+                                                                        "upstream_models": []
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "formula": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "loction and tax",
+                                    "worksheetFields": [],
+                                    "upstreamFields": [
+                                        {
+                                            "name": "Total Lifetime spend",
+                                            "formula": "[Lifetime Spend]+[Lifetime Tax Paid]",
+                                            "upstreamFields": [
+                                                {
+                                                    "name": "Lifetime Spend",
+                                                    "upstreamColumns": [
+                                                        {
+                                                            "name": "LIFETIME_SPEND",
+                                                            "upstreamDatabases": [
+                                                                {
+                                                                    "name": "JAFFLE_SHOP"
+                                                                }
+                                                            ],
+                                                            "upstreamTables": [
+                                                                {
+                                                                    "name": "CUSTOMERS"
+                                                                }
+                                                            ],
+                                                            "database_lineage": {
+                                                                "model": "CUSTOMERS",
+                                                                "column": "LIFETIME_SPEND",
+                                                                "column Description": "Description not available",
+                                                                "reasoning": "The lifetime spend is calculated by summing up the order total for each customer in the ORDERS table.",
+                                                                "upstream_models": [
+                                                                    {
+                                                                        "model": "ORDERS",
+                                                                        "column": "ORDER_TOTAL",
+                                                                        "column Description": "Description not available",
+                                                                        "reasoning": "Directly selected from the STG_ORDERS table",
+                                                                        "upstream_models": [
+                                                                            {
+                                                                                "model": "STG_ORDERS",
+                                                                                "column": "ORDER_TOTAL",
+                                                                                "column Description": "Description not available",
+                                                                                "reasoning": "The ORDER_TOTAL column is transformed from the ORDER_TOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                                                                                "upstream_models": [
+                                                                                    {
+                                                                                        "model": "RAW_ORDERS",
+                                                                                        "column": "ORDER_TOTAL",
+                                                                                        "column Description": "Description not available",
+                                                                                        "reasoning": "Reasoning not available",
+                                                                                        "upstream_models": []
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ],
+                                                    "upstreamDatabases": [
+                                                        {
+                                                            "name": "JAFFLE_SHOP"
+                                                        }
+                                                    ],
+                                                    "upstreamTables": [
+                                                        {
+                                                            "name": "CUSTOMERS"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Lifetime Tax Paid",
+                                                    "upstreamColumns": [
+                                                        {
+                                                            "name": "LIFETIME_TAX_PAID",
+                                                            "upstreamDatabases": [
+                                                                {
+                                                                    "name": "JAFFLE_SHOP"
+                                                                }
+                                                            ],
+                                                            "upstreamTables": [
+                                                                {
+                                                                    "name": "CUSTOMERS"
+                                                                }
+                                                            ],
+                                                            "database_lineage": {
+                                                                "model": "CUSTOMERS",
+                                                                "column": "LIFETIME_TAX_PAID",
+                                                                "column Description": "Description not available",
+                                                                "reasoning": "The lifetime tax paid is calculated by summing up the tax paid for each customer in the ORDERS table.",
+                                                                "upstream_models": [
+                                                                    {
+                                                                        "model": "ORDERS",
+                                                                        "column": "TAX_PAID",
+                                                                        "column Description": "Description not available",
+                                                                        "reasoning": "Directly selected from the STG_ORDERS table",
+                                                                        "upstream_models": [
+                                                                            {
+                                                                                "model": "STG_ORDERS",
+                                                                                "column": "TAX_PAID",
+                                                                                "column Description": "Description not available",
+                                                                                "reasoning": "The TAX_PAID column is transformed from the TAX_PAID column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                                                                                "upstream_models": [
+                                                                                    {
+                                                                                        "model": "RAW_ORDERS",
+                                                                                        "column": "TAX_PAID",
+                                                                                        "column Description": "Description not available",
+                                                                                        "reasoning": "Reasoning not available",
+                                                                                        "upstream_models": []
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ],
+                                                    "upstreamDatabases": [
+                                                        {
+                                                            "name": "JAFFLE_SHOP"
+                                                        }
+                                                    ],
+                                                    "upstreamTables": [
+                                                        {
+                                                            "name": "CUSTOMERS"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Lifetime Tax Paid",
+                                            "upstreamColumns": [
+                                                {
+                                                    "name": "LIFETIME_TAX_PAID",
+                                                    "upstreamDatabases": [
+                                                        {
+                                                            "name": "JAFFLE_SHOP"
+                                                        }
+                                                    ],
+                                                    "upstreamTables": [
+                                                        {
+                                                            "name": "CUSTOMERS"
+                                                        }
+                                                    ],
+                                                    "database_lineage": {
+                                                        "model": "CUSTOMERS",
+                                                        "column": "LIFETIME_TAX_PAID",
+                                                        "column Description": "Description not available",
+                                                        "reasoning": "The lifetime tax paid is calculated by summing up the tax paid for each customer in the ORDERS table.",
+                                                        "upstream_models": [
+                                                            {
+                                                                "model": "ORDERS",
+                                                                "column": "TAX_PAID",
+                                                                "column Description": "Description not available",
+                                                                "reasoning": "Directly selected from the STG_ORDERS table",
+                                                                "upstream_models": [
+                                                                    {
+                                                                        "model": "STG_ORDERS",
+                                                                        "column": "TAX_PAID",
+                                                                        "column Description": "Description not available",
+                                                                        "reasoning": "The TAX_PAID column is transformed from the TAX_PAID column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                                                                        "upstream_models": [
+                                                                            {
+                                                                                "model": "RAW_ORDERS",
+                                                                                "column": "TAX_PAID",
+                                                                                "column Description": "Description not available",
+                                                                                "reasoning": "Reasoning not available",
+                                                                                "upstream_models": []
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "formula": ""
+                                        },
+                                        {
+                                            "name": "Location Name",
+                                            "upstreamColumns": [
+                                                {
+                                                    "name": "LOCATION_NAME",
+                                                    "upstreamDatabases": [
+                                                        {
+                                                            "name": "JAFFLE_SHOP"
+                                                        }
+                                                    ],
+                                                    "upstreamTables": [
+                                                        {
+                                                            "name": "LOCATIONS"
+                                                        }
+                                                    ],
+                                                    "database_lineage": {
+                                                        "model": "LOCATIONS",
+                                                        "column": "LOCATION_NAME",
+                                                        "column Description": "Description not available",
+                                                        "reasoning": "The LOCATION_NAME column is directly selected from the STG_LOCATIONS table without any transformations.",
+                                                        "upstream_models": [
+                                                            {
+                                                                "model": "STG_LOCATIONS",
+                                                                "column": "LOCATION_NAME",
+                                                                "column Description": "Description not available",
+                                                                "reasoning": "The NAME column from the RAW_STORES table is simply renamed to LOCATION_NAME.",
+                                                                "upstream_models": [
+                                                                    {
+                                                                        "model": "RAW_STORES",
+                                                                        "column": "NAME",
+                                                                        "column Description": "Description not available",
+                                                                        "reasoning": "Reasoning not available",
+                                                                        "upstream_models": []
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "formula": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "cust type",
+                                    "worksheetFields": [],
+                                    "upstreamFields": [
+                                        {
+                                            "name": "Customer Type",
+                                            "upstreamColumns": [
+                                                {
+                                                    "name": "CUSTOMER_TYPE",
+                                                    "upstreamDatabases": [
+                                                        {
+                                                            "name": "JAFFLE_SHOP"
+                                                        }
+                                                    ],
+                                                    "upstreamTables": [
+                                                        {
+                                                            "name": "CUSTOMERS"
+                                                        }
+                                                    ],
+                                                    "database_lineage": {
+                                                        "model": "CUSTOMERS",
+                                                        "column": "CUSTOMER_TYPE",
+                                                        "column Description": "Description not available",
+                                                        "reasoning": "The customer type is determined by checking if the customer has more than one order in the ORDERS table. If they do, they are classified as a returning customer, otherwise they are classified as a new customer.",
+                                                        "upstream_models": [
+                                                            {
+                                                                "model": "ORDERS",
+                                                                "column": "ORDER_ID",
+                                                                "column Description": "Description not available",
+                                                                "reasoning": "Directly selected from the STG_ORDERS table",
+                                                                "upstream_models": [
+                                                                    {
+                                                                        "model": "STG_ORDERS",
+                                                                        "column": "ORDER_ID",
+                                                                        "column Description": "Description not available",
+                                                                        "reasoning": "The ORDER_ID column is simply a rename of the ID column from the RAW_ORDERS table.",
+                                                                        "upstream_models": [
+                                                                            {
+                                                                                "model": "RAW_ORDERS",
+                                                                                "column": "ID",
+                                                                                "column Description": "Description not available",
+                                                                                "reasoning": "Reasoning not available",
+                                                                                "upstream_models": []
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "formula": ""
+                                        },
+                                        {
+                                            "name": "Total Lifetime spend",
+                                            "formula": "[Lifetime Spend]+[Lifetime Tax Paid]",
+                                            "upstreamFields": [
+                                                {
+                                                    "name": "Lifetime Spend",
+                                                    "upstreamColumns": [
+                                                        {
+                                                            "name": "LIFETIME_SPEND",
+                                                            "upstreamDatabases": [
+                                                                {
+                                                                    "name": "JAFFLE_SHOP"
+                                                                }
+                                                            ],
+                                                            "upstreamTables": [
+                                                                {
+                                                                    "name": "CUSTOMERS"
+                                                                }
+                                                            ],
+                                                            "database_lineage": {
+                                                                "model": "CUSTOMERS",
+                                                                "column": "LIFETIME_SPEND",
+                                                                "column Description": "Description not available",
+                                                                "reasoning": "The lifetime spend is calculated by summing up the order total for each customer in the ORDERS table.",
+                                                                "upstream_models": [
+                                                                    {
+                                                                        "model": "ORDERS",
+                                                                        "column": "ORDER_TOTAL",
+                                                                        "column Description": "Description not available",
+                                                                        "reasoning": "Directly selected from the STG_ORDERS table",
+                                                                        "upstream_models": [
+                                                                            {
+                                                                                "model": "STG_ORDERS",
+                                                                                "column": "ORDER_TOTAL",
+                                                                                "column Description": "Description not available",
+                                                                                "reasoning": "The ORDER_TOTAL column is transformed from the ORDER_TOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                                                                                "upstream_models": [
+                                                                                    {
+                                                                                        "model": "RAW_ORDERS",
+                                                                                        "column": "ORDER_TOTAL",
+                                                                                        "column Description": "Description not available",
+                                                                                        "reasoning": "Reasoning not available",
+                                                                                        "upstream_models": []
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ],
+                                                    "upstreamDatabases": [
+                                                        {
+                                                            "name": "JAFFLE_SHOP"
+                                                        }
+                                                    ],
+                                                    "upstreamTables": [
+                                                        {
+                                                            "name": "CUSTOMERS"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Lifetime Tax Paid",
+                                                    "upstreamColumns": [
+                                                        {
+                                                            "name": "LIFETIME_TAX_PAID",
+                                                            "upstreamDatabases": [
+                                                                {
+                                                                    "name": "JAFFLE_SHOP"
+                                                                }
+                                                            ],
+                                                            "upstreamTables": [
+                                                                {
+                                                                    "name": "CUSTOMERS"
+                                                                }
+                                                            ],
+                                                            "database_lineage": {
+                                                                "model": "CUSTOMERS",
+                                                                "column": "LIFETIME_TAX_PAID",
+                                                                "column Description": "Description not available",
+                                                                "reasoning": "The lifetime tax paid is calculated by summing up the tax paid for each customer in the ORDERS table.",
+                                                                "upstream_models": [
+                                                                    {
+                                                                        "model": "ORDERS",
+                                                                        "column": "TAX_PAID",
+                                                                        "column Description": "Description not available",
+                                                                        "reasoning": "Directly selected from the STG_ORDERS table",
+                                                                        "upstream_models": [
+                                                                            {
+                                                                                "model": "STG_ORDERS",
+                                                                                "column": "TAX_PAID",
+                                                                                "column Description": "Description not available",
+                                                                                "reasoning": "The TAX_PAID column is transformed from the TAX_PAID column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                                                                                "upstream_models": [
+                                                                                    {
+                                                                                        "model": "RAW_ORDERS",
+                                                                                        "column": "TAX_PAID",
+                                                                                        "column Description": "Description not available",
+                                                                                        "reasoning": "Reasoning not available",
+                                                                                        "upstream_models": []
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ],
+                                                    "upstreamDatabases": [
+                                                        {
+                                                            "name": "JAFFLE_SHOP"
+                                                        }
+                                                    ],
+                                                    "upstreamTables": [
+                                                        {
+                                                            "name": "CUSTOMERS"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Lifetime Spend",
+                                            "upstreamColumns": [
+                                                {
+                                                    "name": "LIFETIME_SPEND",
+                                                    "upstreamDatabases": [
+                                                        {
+                                                            "name": "JAFFLE_SHOP"
+                                                        }
+                                                    ],
+                                                    "upstreamTables": [
+                                                        {
+                                                            "name": "CUSTOMERS"
+                                                        }
+                                                    ],
+                                                    "database_lineage": {
+                                                        "model": "CUSTOMERS",
+                                                        "column": "LIFETIME_SPEND",
+                                                        "column Description": "Description not available",
+                                                        "reasoning": "The lifetime spend is calculated by summing up the order total for each customer in the ORDERS table.",
+                                                        "upstream_models": [
+                                                            {
+                                                                "model": "ORDERS",
+                                                                "column": "ORDER_TOTAL",
+                                                                "column Description": "Description not available",
+                                                                "reasoning": "Directly selected from the STG_ORDERS table",
+                                                                "upstream_models": [
+                                                                    {
+                                                                        "model": "STG_ORDERS",
+                                                                        "column": "ORDER_TOTAL",
+                                                                        "column Description": "Description not available",
+                                                                        "reasoning": "The ORDER_TOTAL column is transformed from the ORDER_TOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                                                                        "upstream_models": [
+                                                                            {
+                                                                                "model": "RAW_ORDERS",
+                                                                                "column": "ORDER_TOTAL",
+                                                                                "column Description": "Description not available",
+                                                                                "reasoning": "Reasoning not available",
+                                                                                "upstream_models": []
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "formula": ""
+                                        },
+                                        {
+                                            "name": "Lifetime Tax Paid",
+                                            "upstreamColumns": [
+                                                {
+                                                    "name": "LIFETIME_TAX_PAID",
+                                                    "upstreamDatabases": [
+                                                        {
+                                                            "name": "JAFFLE_SHOP"
+                                                        }
+                                                    ],
+                                                    "upstreamTables": [
+                                                        {
+                                                            "name": "CUSTOMERS"
+                                                        }
+                                                    ],
+                                                    "database_lineage": {
+                                                        "model": "CUSTOMERS",
+                                                        "column": "LIFETIME_TAX_PAID",
+                                                        "column Description": "Description not available",
+                                                        "reasoning": "The lifetime tax paid is calculated by summing up the tax paid for each customer in the ORDERS table.",
+                                                        "upstream_models": [
+                                                            {
+                                                                "model": "ORDERS",
+                                                                "column": "TAX_PAID",
+                                                                "column Description": "Description not available",
+                                                                "reasoning": "Directly selected from the STG_ORDERS table",
+                                                                "upstream_models": [
+                                                                    {
+                                                                        "model": "STG_ORDERS",
+                                                                        "column": "TAX_PAID",
+                                                                        "column Description": "Description not available",
+                                                                        "reasoning": "The TAX_PAID column is transformed from the TAX_PAID column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                                                                        "upstream_models": [
+                                                                            {
+                                                                                "model": "RAW_ORDERS",
+                                                                                "column": "TAX_PAID",
+                                                                                "column Description": "Description not available",
+                                                                                "reasoning": "Reasoning not available",
+                                                                                "upstream_models": []
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "formula": ""
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,1813 @@
+[
+    {
+        "model": "PRODUCTS",
+        "column": "PRODUCT_ID",
+        "column Description": "Description not available",
+        "reasoning": "No transformation applied, directly selected from the source table.",
+        "upstream_models": [
+            {
+                "model": "STG_PRODUCTS",
+                "column": "PRODUCT_ID",
+                "column Description": "Description not available",
+                "reasoning": "The SKU column is simply renamed to PRODUCT_ID for clarity and consistency in the output.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_PRODUCTS",
+                        "column": "SKU",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "PRODUCTS",
+        "column": "PRODUCT_NAME",
+        "column Description": "Description not available",
+        "reasoning": "No transformation applied, directly selected from the source table.",
+        "upstream_models": [
+            {
+                "model": "STG_PRODUCTS",
+                "column": "PRODUCT_NAME",
+                "column Description": "Description not available",
+                "reasoning": "The NAME column is renamed to PRODUCT_NAME for clarity and consistency in the output.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_PRODUCTS",
+                        "column": "NAME",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "PRODUCTS",
+        "column": "PRODUCT_TYPE",
+        "column Description": "Description not available",
+        "reasoning": "No transformation applied, directly selected from the source table.",
+        "upstream_models": [
+            {
+                "model": "STG_PRODUCTS",
+                "column": "PRODUCT_TYPE",
+                "column Description": "Description not available",
+                "reasoning": "The TYPE column is renamed to PRODUCT_TYPE for clarity and consistency in the output.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_PRODUCTS",
+                        "column": "TYPE",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "PRODUCTS",
+        "column": "PRODUCT_DESCRIPTION",
+        "column Description": "Description not available",
+        "reasoning": "No transformation applied, directly selected from the source table.",
+        "upstream_models": [
+            {
+                "model": "STG_PRODUCTS",
+                "column": "PRODUCT_DESCRIPTION",
+                "column Description": "Description not available",
+                "reasoning": "The DESCRIPTION column is renamed to PRODUCT_DESCRIPTION for clarity and consistency in the output.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_PRODUCTS",
+                        "column": "DESCRIPTION",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "PRODUCTS",
+        "column": "PRODUCT_PRICE",
+        "column Description": "Description not available",
+        "reasoning": "No transformation applied, directly selected from the source table.",
+        "upstream_models": [
+            {
+                "model": "STG_PRODUCTS",
+                "column": "PRODUCT_PRICE",
+                "column Description": "Description not available",
+                "reasoning": "The PRICE column is transformed into a structured format using the CENTS_TO_DOLLARS function and then wrapped in a STRUCT to create a nested object.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_PRODUCTS",
+                        "column": "PRICE",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "PRODUCTS",
+        "column": "IS_FOOD_ITEM",
+        "column Description": "Description not available",
+        "reasoning": "No transformation applied, directly selected from the source table.",
+        "upstream_models": [
+            {
+                "model": "STG_PRODUCTS",
+                "column": "IS_FOOD_ITEM",
+                "column Description": "Description not available",
+                "reasoning": "The TYPE column is checked for the value 'JAFFLE' using the COALESCE function, which returns TRUE if the condition is met and FALSE otherwise, indicating whether the product is a food item.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_PRODUCTS",
+                        "column": "TYPE",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "PRODUCTS",
+        "column": "IS_DRINK_ITEM",
+        "column Description": "Description not available",
+        "reasoning": "No transformation applied, directly selected from the source table.",
+        "upstream_models": [
+            {
+                "model": "STG_PRODUCTS",
+                "column": "IS_DRINK_ITEM",
+                "column Description": "Description not available",
+                "reasoning": "The TYPE column is checked for the value 'BEVERAGE' using the COALESCE function, which returns TRUE if the condition is met and FALSE otherwise, indicating whether the product is a drink item.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_PRODUCTS",
+                        "column": "TYPE",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDER_ITEMS",
+        "column": "ORDER_ITEM_ID",
+        "column Description": "Description not available",
+        "reasoning": "Direct selection of ORDER_ITEM_ID from STG_ORDER_ITEMS table",
+        "upstream_models": [
+            {
+                "model": "STG_ORDER_ITEMS",
+                "column": "ORDER_ITEM_ID",
+                "column Description": "Description not available",
+                "reasoning": "The column 'ORDER_ITEM_ID' is simply a renamed version of the 'ID' column from the 'RAW_ITEMS' table.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ITEMS",
+                        "column": "ID",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDER_ITEMS",
+        "column": "ORDER_ID",
+        "column Description": "Description not available",
+        "reasoning": "Direct selection of ORDER_ID from STG_ORDER_ITEMS table",
+        "upstream_models": [
+            {
+                "model": "STG_ORDER_ITEMS",
+                "column": "ORDER_ID",
+                "column Description": "Description not available",
+                "reasoning": "The column 'ORDER_ID' is selected directly from the 'RAW_ITEMS' table without any transformations.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ITEMS",
+                        "column": "ORDER_ID",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDER_ITEMS",
+        "column": "PRODUCT_ID",
+        "column Description": "Description not available",
+        "reasoning": "Direct selection of PRODUCT_ID from STG_ORDER_ITEMS table",
+        "upstream_models": [
+            {
+                "model": "STG_ORDER_ITEMS",
+                "column": "PRODUCT_ID",
+                "column Description": "Description not available",
+                "reasoning": "The column 'PRODUCT_ID' is a renamed version of the 'SKU' column from the 'RAW_ITEMS' table, indicating that the SKU is being treated as a product identifier.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ITEMS",
+                        "column": "SKU",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDER_ITEMS",
+        "column": "ORDERED_AT",
+        "column Description": "Description not available",
+        "reasoning": "Joined STG_ORDERS table on ORDER_ID to retrieve ORDERED_AT timestamp",
+        "upstream_models": [
+            {
+                "model": "STG_ORDERS",
+                "column": "ORDERED_AT",
+                "column Description": "Description not available",
+                "reasoning": "The ORDERED_AT column is transformed from the ORDERED_AT column in the RAW_ORDERS table by applying the DBT.DATE_TRUNC function, which likely truncates the date to the day level.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ORDERS",
+                        "column": "ORDERED_AT",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDER_ITEMS",
+        "column": "PRODUCT_NAME",
+        "column Description": "Description not available",
+        "reasoning": "Joined STG_PRODUCTS table on PRODUCT_ID to retrieve PRODUCT_NAME",
+        "upstream_models": [
+            {
+                "model": "STG_PRODUCTS",
+                "column": "PRODUCT_NAME",
+                "column Description": "Description not available",
+                "reasoning": "The NAME column is renamed to PRODUCT_NAME for clarity and consistency in the output.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_PRODUCTS",
+                        "column": "NAME",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDER_ITEMS",
+        "column": "PRODUCT_PRICE",
+        "column Description": "Description not available",
+        "reasoning": "Joined STG_PRODUCTS table on PRODUCT_ID to retrieve PRODUCT_PRICE",
+        "upstream_models": [
+            {
+                "model": "STG_PRODUCTS",
+                "column": "PRODUCT_PRICE",
+                "column Description": "Description not available",
+                "reasoning": "The PRICE column is transformed into a structured format using the CENTS_TO_DOLLARS function and then wrapped in a STRUCT to create a nested object.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_PRODUCTS",
+                        "column": "PRICE",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDER_ITEMS",
+        "column": "IS_FOOD_ITEM",
+        "column Description": "Description not available",
+        "reasoning": "Joined STG_PRODUCTS table on PRODUCT_ID to retrieve IS_FOOD_ITEM flag",
+        "upstream_models": [
+            {
+                "model": "STG_PRODUCTS",
+                "column": "IS_FOOD_ITEM",
+                "column Description": "Description not available",
+                "reasoning": "The TYPE column is checked for the value 'JAFFLE' using the COALESCE function, which returns TRUE if the condition is met and FALSE otherwise, indicating whether the product is a food item.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_PRODUCTS",
+                        "column": "TYPE",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDER_ITEMS",
+        "column": "IS_DRINK_ITEM",
+        "column Description": "Description not available",
+        "reasoning": "Joined STG_PRODUCTS table on PRODUCT_ID to retrieve IS_DRINK_ITEM flag",
+        "upstream_models": [
+            {
+                "model": "STG_PRODUCTS",
+                "column": "IS_DRINK_ITEM",
+                "column Description": "Description not available",
+                "reasoning": "The TYPE column is checked for the value 'BEVERAGE' using the COALESCE function, which returns TRUE if the condition is met and FALSE otherwise, indicating whether the product is a drink item.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_PRODUCTS",
+                        "column": "TYPE",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDER_ITEMS",
+        "column": "SUPPLY_COST",
+        "column Description": "Description not available",
+        "reasoning": "Joined STG_SUPPLIES table on PRODUCT_ID and calculated SUM of SUPPLY_COST for each PRODUCT_ID",
+        "upstream_models": [
+            {
+                "model": "STG_SUPPLIES",
+                "column": "SUPPLY_COST",
+                "column Description": "Description not available",
+                "reasoning": "The 'COST' column is converted from cents to dollars using a custom function (CENTS_TO_DOLLARS) and wrapped in a struct.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_SUPPLIES",
+                        "column": "COST",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "CUSTOMERS",
+        "column": "CUSTOMER_ID",
+        "column Description": "Description not available",
+        "reasoning": "The customer ID is selected directly from the STG_CUSTOMERS table, with no transformation.",
+        "upstream_models": [
+            {
+                "model": "STG_CUSTOMERS",
+                "column": "CUSTOMER_ID",
+                "column Description": "Description not available",
+                "reasoning": "The CUSTOMER_ID column is a direct copy of the ID column from the RAW_CUSTOMERS table, with a simple rename to make the column name more descriptive.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_CUSTOMERS",
+                        "column": "ID",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "CUSTOMERS",
+        "column": "CUSTOMER_NAME",
+        "column Description": "Description not available",
+        "reasoning": "The customer name is selected directly from the STG_CUSTOMERS table, with no transformation.",
+        "upstream_models": [
+            {
+                "model": "STG_CUSTOMERS",
+                "column": "CUSTOMER_NAME",
+                "column Description": "Description not available",
+                "reasoning": "The CUSTOMER_NAME column is a direct copy of the NAME column from the RAW_CUSTOMERS table, with a simple rename to make the column name more descriptive.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_CUSTOMERS",
+                        "column": "NAME",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "CUSTOMERS",
+        "column": "COUNT_LIFETIME_ORDERS",
+        "column Description": "Description not available",
+        "reasoning": "The count of lifetime orders is calculated by counting the distinct order IDs for each customer in the ORDERS table.",
+        "upstream_models": [
+            {
+                "model": "ORDERS",
+                "column": "ORDER_ID",
+                "column Description": "Description not available",
+                "reasoning": "Directly selected from the STG_ORDERS table",
+                "upstream_models": [
+                    {
+                        "model": "STG_ORDERS",
+                        "column": "ORDER_ID",
+                        "column Description": "Description not available",
+                        "reasoning": "The ORDER_ID column is simply a rename of the ID column from the RAW_ORDERS table.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_ORDERS",
+                                "column": "ID",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "CUSTOMERS",
+        "column": "FIRST_ORDERED_AT",
+        "column Description": "Description not available",
+        "reasoning": "The first ordered at date is calculated by taking the minimum ordered at date for each customer in the ORDERS table.",
+        "upstream_models": [
+            {
+                "model": "ORDERS",
+                "column": "ORDERED_AT",
+                "column Description": "Description not available",
+                "reasoning": "Directly selected from the STG_ORDERS table",
+                "upstream_models": [
+                    {
+                        "model": "STG_ORDERS",
+                        "column": "ORDERED_AT",
+                        "column Description": "Description not available",
+                        "reasoning": "The ORDERED_AT column is transformed from the ORDERED_AT column in the RAW_ORDERS table by applying the DBT.DATE_TRUNC function, which likely truncates the date to the day level.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_ORDERS",
+                                "column": "ORDERED_AT",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "CUSTOMERS",
+        "column": "LAST_ORDERED_AT",
+        "column Description": "Description not available",
+        "reasoning": "The last ordered at date is calculated by taking the maximum ordered at date for each customer in the ORDERS table.",
+        "upstream_models": [
+            {
+                "model": "ORDERS",
+                "column": "ORDERED_AT",
+                "column Description": "Description not available",
+                "reasoning": "Directly selected from the STG_ORDERS table",
+                "upstream_models": [
+                    {
+                        "model": "STG_ORDERS",
+                        "column": "ORDERED_AT",
+                        "column Description": "Description not available",
+                        "reasoning": "The ORDERED_AT column is transformed from the ORDERED_AT column in the RAW_ORDERS table by applying the DBT.DATE_TRUNC function, which likely truncates the date to the day level.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_ORDERS",
+                                "column": "ORDERED_AT",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "CUSTOMERS",
+        "column": "LIFETIME_SPEND_PRETAX",
+        "column Description": "Description not available",
+        "reasoning": "The lifetime spend pre-tax is calculated by summing up the subtotal for each customer in the ORDERS table.",
+        "upstream_models": [
+            {
+                "model": "ORDERS",
+                "column": "SUBTOTAL",
+                "column Description": "Description not available",
+                "reasoning": "Directly selected from the STG_ORDERS table",
+                "upstream_models": [
+                    {
+                        "model": "STG_ORDERS",
+                        "column": "SUBTOTAL",
+                        "column Description": "Description not available",
+                        "reasoning": "The SUBTOTAL column is transformed from the SUBTOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_ORDERS",
+                                "column": "SUBTOTAL",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "CUSTOMERS",
+        "column": "LIFETIME_TAX_PAID",
+        "column Description": "Description not available",
+        "reasoning": "The lifetime tax paid is calculated by summing up the tax paid for each customer in the ORDERS table.",
+        "upstream_models": [
+            {
+                "model": "ORDERS",
+                "column": "TAX_PAID",
+                "column Description": "Description not available",
+                "reasoning": "Directly selected from the STG_ORDERS table",
+                "upstream_models": [
+                    {
+                        "model": "STG_ORDERS",
+                        "column": "TAX_PAID",
+                        "column Description": "Description not available",
+                        "reasoning": "The TAX_PAID column is transformed from the TAX_PAID column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_ORDERS",
+                                "column": "TAX_PAID",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "CUSTOMERS",
+        "column": "LIFETIME_SPEND",
+        "column Description": "Description not available",
+        "reasoning": "The lifetime spend is calculated by summing up the order total for each customer in the ORDERS table.",
+        "upstream_models": [
+            {
+                "model": "ORDERS",
+                "column": "ORDER_TOTAL",
+                "column Description": "Description not available",
+                "reasoning": "Directly selected from the STG_ORDERS table",
+                "upstream_models": [
+                    {
+                        "model": "STG_ORDERS",
+                        "column": "ORDER_TOTAL",
+                        "column Description": "Description not available",
+                        "reasoning": "The ORDER_TOTAL column is transformed from the ORDER_TOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_ORDERS",
+                                "column": "ORDER_TOTAL",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "CUSTOMERS",
+        "column": "CUSTOMER_TYPE",
+        "column Description": "Description not available",
+        "reasoning": "The customer type is determined by checking if the customer has more than one order in the ORDERS table. If they do, they are classified as a returning customer, otherwise they are classified as a new customer.",
+        "upstream_models": [
+            {
+                "model": "ORDERS",
+                "column": "ORDER_ID",
+                "column Description": "Description not available",
+                "reasoning": "Directly selected from the STG_ORDERS table",
+                "upstream_models": [
+                    {
+                        "model": "STG_ORDERS",
+                        "column": "ORDER_ID",
+                        "column Description": "Description not available",
+                        "reasoning": "The ORDER_ID column is simply a rename of the ID column from the RAW_ORDERS table.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_ORDERS",
+                                "column": "ID",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "SUPPLIES",
+        "column": "SUPPLY_UUID",
+        "column Description": "Description not available",
+        "reasoning": "No transformation applied, column is selected as-is from the source table.",
+        "upstream_models": [
+            {
+                "model": "STG_SUPPLIES",
+                "column": "SUPPLY_UUID",
+                "column Description": "Description not available",
+                "reasoning": "A unique identifier (UUID) is generated by combining the 'ID' and 'SKU' columns using a custom function (DBT_UTILS.GENERATE_SURROGATE_KEY).",
+                "upstream_models": [
+                    {
+                        "model": "RAW_SUPPLIES",
+                        "column": "ID",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "SUPPLIES",
+        "column": "SUPPLY_ID",
+        "column Description": "Description not available",
+        "reasoning": "No transformation applied, column is selected as-is from the source table.",
+        "upstream_models": [
+            {
+                "model": "STG_SUPPLIES",
+                "column": "SUPPLY_ID",
+                "column Description": "Description not available",
+                "reasoning": "The 'ID' column is simply renamed to 'SUPPLY_ID' for clarity.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_SUPPLIES",
+                        "column": "ID",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "SUPPLIES",
+        "column": "PRODUCT_ID",
+        "column Description": "Description not available",
+        "reasoning": "No transformation applied, column is selected as-is from the source table.",
+        "upstream_models": [
+            {
+                "model": "STG_SUPPLIES",
+                "column": "PRODUCT_ID",
+                "column Description": "Description not available",
+                "reasoning": "The 'SKU' column is renamed to 'PRODUCT_ID' to better reflect its relationship to products.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_SUPPLIES",
+                        "column": "SKU",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "SUPPLIES",
+        "column": "SUPPLY_NAME",
+        "column Description": "Description not available",
+        "reasoning": "No transformation applied, column is selected as-is from the source table.",
+        "upstream_models": [
+            {
+                "model": "STG_SUPPLIES",
+                "column": "SUPPLY_NAME",
+                "column Description": "Description not available",
+                "reasoning": "The 'NAME' column is simply renamed to 'SUPPLY_NAME' for clarity.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_SUPPLIES",
+                        "column": "NAME",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "SUPPLIES",
+        "column": "SUPPLY_COST",
+        "column Description": "Description not available",
+        "reasoning": "No transformation applied, column is selected as-is from the source table.",
+        "upstream_models": [
+            {
+                "model": "STG_SUPPLIES",
+                "column": "SUPPLY_COST",
+                "column Description": "Description not available",
+                "reasoning": "The 'COST' column is converted from cents to dollars using a custom function (CENTS_TO_DOLLARS) and wrapped in a struct.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_SUPPLIES",
+                        "column": "COST",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "SUPPLIES",
+        "column": "IS_PERISHABLE_SUPPLY",
+        "column Description": "Description not available",
+        "reasoning": "No transformation applied, column is selected as-is from the source table.",
+        "upstream_models": [
+            {
+                "model": "STG_SUPPLIES",
+                "column": "IS_PERISHABLE_SUPPLY",
+                "column Description": "Description not available",
+                "reasoning": "The 'PERISHABLE' column is simply renamed to 'IS_PERISHABLE_SUPPLY' for clarity, indicating whether the supply is perishable or not.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_SUPPLIES",
+                        "column": "PERISHABLE",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "LOCATIONS",
+        "column": "LOCATION_ID",
+        "column Description": "Description not available",
+        "reasoning": "The LOCATION_ID column is directly selected from the STG_LOCATIONS table without any transformations.",
+        "upstream_models": [
+            {
+                "model": "STG_LOCATIONS",
+                "column": "LOCATION_ID",
+                "column Description": "Description not available",
+                "reasoning": "The ID column from the RAW_STORES table is simply renamed to LOCATION_ID.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_STORES",
+                        "column": "ID",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "LOCATIONS",
+        "column": "LOCATION_NAME",
+        "column Description": "Description not available",
+        "reasoning": "The LOCATION_NAME column is directly selected from the STG_LOCATIONS table without any transformations.",
+        "upstream_models": [
+            {
+                "model": "STG_LOCATIONS",
+                "column": "LOCATION_NAME",
+                "column Description": "Description not available",
+                "reasoning": "The NAME column from the RAW_STORES table is simply renamed to LOCATION_NAME.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_STORES",
+                        "column": "NAME",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "LOCATIONS",
+        "column": "TAX_RATE",
+        "column Description": "Description not available",
+        "reasoning": "The TAX_RATE column is directly selected from the STG_LOCATIONS table without any transformations.",
+        "upstream_models": [
+            {
+                "model": "STG_LOCATIONS",
+                "column": "TAX_RATE",
+                "column Description": "Description not available",
+                "reasoning": "The TAX_RATE column from the RAW_STORES table is selected as-is, with no transformation.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_STORES",
+                        "column": "TAX_RATE",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "LOCATIONS",
+        "column": "OPENED_DATE",
+        "column Description": "Description not available",
+        "reasoning": "The OPENED_DATE column is directly selected from the STG_LOCATIONS table without any transformations.",
+        "upstream_models": [
+            {
+                "model": "STG_LOCATIONS",
+                "column": "OPENED_DATE",
+                "column Description": "Description not available",
+                "reasoning": "The OPENED_AT column from the RAW_STORES table is truncated to the day level using the DBT.DATE_TRUNC function and then wrapped in a STRUCT to create a new column named OPENED_DATE.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_STORES",
+                        "column": "OPENED_AT",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "ORDER_ID",
+        "column Description": "Description not available",
+        "reasoning": "Directly selected from the STG_ORDERS table",
+        "upstream_models": [
+            {
+                "model": "STG_ORDERS",
+                "column": "ORDER_ID",
+                "column Description": "Description not available",
+                "reasoning": "The ORDER_ID column is simply a rename of the ID column from the RAW_ORDERS table.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ORDERS",
+                        "column": "ID",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "LOCATION_ID",
+        "column Description": "Description not available",
+        "reasoning": "Directly selected from the STG_ORDERS table",
+        "upstream_models": [
+            {
+                "model": "STG_ORDERS",
+                "column": "LOCATION_ID",
+                "column Description": "Description not available",
+                "reasoning": "The LOCATION_ID column is a rename of the STORE_ID column from the RAW_ORDERS table.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ORDERS",
+                        "column": "STORE_ID",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "CUSTOMER_ID",
+        "column Description": "Description not available",
+        "reasoning": "Directly selected from the STG_ORDERS table",
+        "upstream_models": [
+            {
+                "model": "STG_ORDERS",
+                "column": "CUSTOMER_ID",
+                "column Description": "Description not available",
+                "reasoning": "The CUSTOMER_ID column is a rename of the CUSTOMER column from the RAW_ORDERS table.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ORDERS",
+                        "column": "CUSTOMER",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "SUBTOTAL_CENTS",
+        "column Description": "Description not available",
+        "reasoning": "Directly selected from the STG_ORDERS table",
+        "upstream_models": [
+            {
+                "model": "STG_ORDERS",
+                "column": "SUBTOTAL_CENTS",
+                "column Description": "Description not available",
+                "reasoning": "The SUBTOTAL_CENTS column is a simple copy of the SUBTOTAL column from the RAW_ORDERS table, with no transformation applied.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ORDERS",
+                        "column": "SUBTOTAL",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "TAX_PAID_CENTS",
+        "column Description": "Description not available",
+        "reasoning": "Directly selected from the STG_ORDERS table",
+        "upstream_models": [
+            {
+                "model": "STG_ORDERS",
+                "column": "TAX_PAID_CENTS",
+                "column Description": "Description not available",
+                "reasoning": "The TAX_PAID_CENTS column is a simple copy of the TAX_PAID column from the RAW_ORDERS table, with no transformation applied.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ORDERS",
+                        "column": "TAX_PAID",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "ORDER_TOTAL_CENTS",
+        "column Description": "Description not available",
+        "reasoning": "Directly selected from the STG_ORDERS table",
+        "upstream_models": [
+            {
+                "model": "STG_ORDERS",
+                "column": "ORDER_TOTAL_CENTS",
+                "column Description": "Description not available",
+                "reasoning": "The ORDER_TOTAL_CENTS column is a simple copy of the ORDER_TOTAL column from the RAW_ORDERS table, with no transformation applied.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ORDERS",
+                        "column": "ORDER_TOTAL",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "SUBTOTAL",
+        "column Description": "Description not available",
+        "reasoning": "Directly selected from the STG_ORDERS table",
+        "upstream_models": [
+            {
+                "model": "STG_ORDERS",
+                "column": "SUBTOTAL",
+                "column Description": "Description not available",
+                "reasoning": "The SUBTOTAL column is transformed from the SUBTOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ORDERS",
+                        "column": "SUBTOTAL",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "TAX_PAID",
+        "column Description": "Description not available",
+        "reasoning": "Directly selected from the STG_ORDERS table",
+        "upstream_models": [
+            {
+                "model": "STG_ORDERS",
+                "column": "TAX_PAID",
+                "column Description": "Description not available",
+                "reasoning": "The TAX_PAID column is transformed from the TAX_PAID column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ORDERS",
+                        "column": "TAX_PAID",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "ORDER_TOTAL",
+        "column Description": "Description not available",
+        "reasoning": "Directly selected from the STG_ORDERS table",
+        "upstream_models": [
+            {
+                "model": "STG_ORDERS",
+                "column": "ORDER_TOTAL",
+                "column Description": "Description not available",
+                "reasoning": "The ORDER_TOTAL column is transformed from the ORDER_TOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ORDERS",
+                        "column": "ORDER_TOTAL",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "ORDERED_AT",
+        "column Description": "Description not available",
+        "reasoning": "Directly selected from the STG_ORDERS table",
+        "upstream_models": [
+            {
+                "model": "STG_ORDERS",
+                "column": "ORDERED_AT",
+                "column Description": "Description not available",
+                "reasoning": "The ORDERED_AT column is transformed from the ORDERED_AT column in the RAW_ORDERS table by applying the DBT.DATE_TRUNC function, which likely truncates the date to the day level.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ORDERS",
+                        "column": "ORDERED_AT",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "ORDER_COST",
+        "column Description": "Description not available",
+        "reasoning": "Calculated by summing the SUPPLY_COST column from the ORDER_ITEMS table, grouped by ORDER_ID",
+        "upstream_models": [
+            {
+                "model": "ORDER_ITEMS",
+                "column": "SUPPLY_COST",
+                "column Description": "Description not available",
+                "reasoning": "Joined STG_SUPPLIES table on PRODUCT_ID and calculated SUM of SUPPLY_COST for each PRODUCT_ID",
+                "upstream_models": [
+                    {
+                        "model": "STG_SUPPLIES",
+                        "column": "SUPPLY_COST",
+                        "column Description": "Description not available",
+                        "reasoning": "The 'COST' column is converted from cents to dollars using a custom function (CENTS_TO_DOLLARS) and wrapped in a struct.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_SUPPLIES",
+                                "column": "COST",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "ORDER_ITEMS_SUBTOTAL",
+        "column Description": "Description not available",
+        "reasoning": "Calculated by summing the PRODUCT_PRICE column from the ORDER_ITEMS table, grouped by ORDER_ID",
+        "upstream_models": [
+            {
+                "model": "ORDER_ITEMS",
+                "column": "PRODUCT_PRICE",
+                "column Description": "Description not available",
+                "reasoning": "Joined STG_PRODUCTS table on PRODUCT_ID to retrieve PRODUCT_PRICE",
+                "upstream_models": [
+                    {
+                        "model": "STG_PRODUCTS",
+                        "column": "PRODUCT_PRICE",
+                        "column Description": "Description not available",
+                        "reasoning": "The PRICE column is transformed into a structured format using the CENTS_TO_DOLLARS function and then wrapped in a STRUCT to create a nested object.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_PRODUCTS",
+                                "column": "PRICE",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "COUNT_FOOD_ITEMS",
+        "column Description": "Description not available",
+        "reasoning": "Calculated by counting the number of rows in the ORDER_ITEMS table where IS_FOOD_ITEM is true, grouped by ORDER_ID",
+        "upstream_models": [
+            {
+                "model": "ORDER_ITEMS",
+                "column": "IS_FOOD_ITEM",
+                "column Description": "Description not available",
+                "reasoning": "Joined STG_PRODUCTS table on PRODUCT_ID to retrieve IS_FOOD_ITEM flag",
+                "upstream_models": [
+                    {
+                        "model": "STG_PRODUCTS",
+                        "column": "IS_FOOD_ITEM",
+                        "column Description": "Description not available",
+                        "reasoning": "The TYPE column is checked for the value 'JAFFLE' using the COALESCE function, which returns TRUE if the condition is met and FALSE otherwise, indicating whether the product is a food item.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_PRODUCTS",
+                                "column": "TYPE",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "COUNT_DRINK_ITEMS",
+        "column Description": "Description not available",
+        "reasoning": "Calculated by counting the number of rows in the ORDER_ITEMS table where IS_DRINK_ITEM is true, grouped by ORDER_ID",
+        "upstream_models": [
+            {
+                "model": "ORDER_ITEMS",
+                "column": "IS_DRINK_ITEM",
+                "column Description": "Description not available",
+                "reasoning": "Joined STG_PRODUCTS table on PRODUCT_ID to retrieve IS_DRINK_ITEM flag",
+                "upstream_models": [
+                    {
+                        "model": "STG_PRODUCTS",
+                        "column": "IS_DRINK_ITEM",
+                        "column Description": "Description not available",
+                        "reasoning": "The TYPE column is checked for the value 'BEVERAGE' using the COALESCE function, which returns TRUE if the condition is met and FALSE otherwise, indicating whether the product is a drink item.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_PRODUCTS",
+                                "column": "TYPE",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "COUNT_ORDER_ITEMS",
+        "column Description": "Description not available",
+        "reasoning": "Calculated by counting the number of rows in the ORDER_ITEMS table, grouped by ORDER_ID",
+        "upstream_models": [
+            {
+                "model": "ORDER_ITEMS",
+                "column": "ORDER_ITEM_ID",
+                "column Description": "Description not available",
+                "reasoning": "Direct selection of ORDER_ITEM_ID from STG_ORDER_ITEMS table",
+                "upstream_models": [
+                    {
+                        "model": "STG_ORDER_ITEMS",
+                        "column": "ORDER_ITEM_ID",
+                        "column Description": "Description not available",
+                        "reasoning": "The column 'ORDER_ITEM_ID' is simply a renamed version of the 'ID' column from the 'RAW_ITEMS' table.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_ITEMS",
+                                "column": "ID",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "IS_FOOD_ORDER",
+        "column Description": "Description not available",
+        "reasoning": "Calculated by checking if the COUNT_FOOD_ITEMS column is greater than 0",
+        "upstream_models": [
+            {
+                "model": "ORDER_ITEMS",
+                "column": "IS_FOOD_ITEM",
+                "column Description": "Description not available",
+                "reasoning": "Joined STG_PRODUCTS table on PRODUCT_ID to retrieve IS_FOOD_ITEM flag",
+                "upstream_models": [
+                    {
+                        "model": "STG_PRODUCTS",
+                        "column": "IS_FOOD_ITEM",
+                        "column Description": "Description not available",
+                        "reasoning": "The TYPE column is checked for the value 'JAFFLE' using the COALESCE function, which returns TRUE if the condition is met and FALSE otherwise, indicating whether the product is a food item.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_PRODUCTS",
+                                "column": "TYPE",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "IS_DRINK_ORDER",
+        "column Description": "Description not available",
+        "reasoning": "Calculated by checking if the COUNT_DRINK_ITEMS column is greater than 0",
+        "upstream_models": [
+            {
+                "model": "ORDER_ITEMS",
+                "column": "IS_DRINK_ITEM",
+                "column Description": "Description not available",
+                "reasoning": "Joined STG_PRODUCTS table on PRODUCT_ID to retrieve IS_DRINK_ITEM flag",
+                "upstream_models": [
+                    {
+                        "model": "STG_PRODUCTS",
+                        "column": "IS_DRINK_ITEM",
+                        "column Description": "Description not available",
+                        "reasoning": "The TYPE column is checked for the value 'BEVERAGE' using the COALESCE function, which returns TRUE if the condition is met and FALSE otherwise, indicating whether the product is a drink item.",
+                        "upstream_models": [
+                            {
+                                "model": "RAW_PRODUCTS",
+                                "column": "TYPE",
+                                "column Description": "Description not available",
+                                "reasoning": "Reasoning not available",
+                                "upstream_models": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "ORDERS",
+        "column": "CUSTOMER_ORDER_NUMBER",
+        "column Description": "Description not available",
+        "reasoning": "Calculated by assigning a unique number to each order for each customer, based on the ORDERED_AT timestamp",
+        "upstream_models": [
+            {
+                "model": "STG_ORDERS",
+                "column": "CUSTOMER_ID",
+                "column Description": "Description not available",
+                "reasoning": "The CUSTOMER_ID column is a rename of the CUSTOMER column from the RAW_ORDERS table.",
+                "upstream_models": [
+                    {
+                        "model": "RAW_ORDERS",
+                        "column": "CUSTOMER",
+                        "column Description": "Description not available",
+                        "reasoning": "Reasoning not available",
+                        "upstream_models": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "model": "STG_PRODUCTS",
+        "column": "PRODUCT_ID",
+        "column Description": "Description not available",
+        "reasoning": "The SKU column is simply renamed to PRODUCT_ID for clarity and consistency in the output.",
+        "upstream_models": [
+            {
+                "model": "RAW_PRODUCTS",
+                "column": "SKU",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_PRODUCTS",
+        "column": "PRODUCT_NAME",
+        "column Description": "Description not available",
+        "reasoning": "The NAME column is renamed to PRODUCT_NAME for clarity and consistency in the output.",
+        "upstream_models": [
+            {
+                "model": "RAW_PRODUCTS",
+                "column": "NAME",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_PRODUCTS",
+        "column": "PRODUCT_TYPE",
+        "column Description": "Description not available",
+        "reasoning": "The TYPE column is renamed to PRODUCT_TYPE for clarity and consistency in the output.",
+        "upstream_models": [
+            {
+                "model": "RAW_PRODUCTS",
+                "column": "TYPE",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_PRODUCTS",
+        "column": "PRODUCT_DESCRIPTION",
+        "column Description": "Description not available",
+        "reasoning": "The DESCRIPTION column is renamed to PRODUCT_DESCRIPTION for clarity and consistency in the output.",
+        "upstream_models": [
+            {
+                "model": "RAW_PRODUCTS",
+                "column": "DESCRIPTION",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_PRODUCTS",
+        "column": "PRODUCT_PRICE",
+        "column Description": "Description not available",
+        "reasoning": "The PRICE column is transformed into a structured format using the CENTS_TO_DOLLARS function and then wrapped in a STRUCT to create a nested object.",
+        "upstream_models": [
+            {
+                "model": "RAW_PRODUCTS",
+                "column": "PRICE",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_PRODUCTS",
+        "column": "IS_FOOD_ITEM",
+        "column Description": "Description not available",
+        "reasoning": "The TYPE column is checked for the value 'JAFFLE' using the COALESCE function, which returns TRUE if the condition is met and FALSE otherwise, indicating whether the product is a food item.",
+        "upstream_models": [
+            {
+                "model": "RAW_PRODUCTS",
+                "column": "TYPE",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_PRODUCTS",
+        "column": "IS_DRINK_ITEM",
+        "column Description": "Description not available",
+        "reasoning": "The TYPE column is checked for the value 'BEVERAGE' using the COALESCE function, which returns TRUE if the condition is met and FALSE otherwise, indicating whether the product is a drink item.",
+        "upstream_models": [
+            {
+                "model": "RAW_PRODUCTS",
+                "column": "TYPE",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_SUPPLIES",
+        "column": "SUPPLY_UUID",
+        "column Description": "Description not available",
+        "reasoning": "A unique identifier (UUID) is generated by combining the 'ID' and 'SKU' columns using a custom function (DBT_UTILS.GENERATE_SURROGATE_KEY).",
+        "upstream_models": [
+            {
+                "model": "RAW_SUPPLIES",
+                "column": "ID",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_SUPPLIES",
+        "column": "SUPPLY_ID",
+        "column Description": "Description not available",
+        "reasoning": "The 'ID' column is simply renamed to 'SUPPLY_ID' for clarity.",
+        "upstream_models": [
+            {
+                "model": "RAW_SUPPLIES",
+                "column": "ID",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_SUPPLIES",
+        "column": "PRODUCT_ID",
+        "column Description": "Description not available",
+        "reasoning": "The 'SKU' column is renamed to 'PRODUCT_ID' to better reflect its relationship to products.",
+        "upstream_models": [
+            {
+                "model": "RAW_SUPPLIES",
+                "column": "SKU",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_SUPPLIES",
+        "column": "SUPPLY_NAME",
+        "column Description": "Description not available",
+        "reasoning": "The 'NAME' column is simply renamed to 'SUPPLY_NAME' for clarity.",
+        "upstream_models": [
+            {
+                "model": "RAW_SUPPLIES",
+                "column": "NAME",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_SUPPLIES",
+        "column": "SUPPLY_COST",
+        "column Description": "Description not available",
+        "reasoning": "The 'COST' column is converted from cents to dollars using a custom function (CENTS_TO_DOLLARS) and wrapped in a struct.",
+        "upstream_models": [
+            {
+                "model": "RAW_SUPPLIES",
+                "column": "COST",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_SUPPLIES",
+        "column": "IS_PERISHABLE_SUPPLY",
+        "column Description": "Description not available",
+        "reasoning": "The 'PERISHABLE' column is simply renamed to 'IS_PERISHABLE_SUPPLY' for clarity, indicating whether the supply is perishable or not.",
+        "upstream_models": [
+            {
+                "model": "RAW_SUPPLIES",
+                "column": "PERISHABLE",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_ORDERS",
+        "column": "ORDER_ID",
+        "column Description": "Description not available",
+        "reasoning": "The ORDER_ID column is simply a rename of the ID column from the RAW_ORDERS table.",
+        "upstream_models": [
+            {
+                "model": "RAW_ORDERS",
+                "column": "ID",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_ORDERS",
+        "column": "LOCATION_ID",
+        "column Description": "Description not available",
+        "reasoning": "The LOCATION_ID column is a rename of the STORE_ID column from the RAW_ORDERS table.",
+        "upstream_models": [
+            {
+                "model": "RAW_ORDERS",
+                "column": "STORE_ID",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_ORDERS",
+        "column": "CUSTOMER_ID",
+        "column Description": "Description not available",
+        "reasoning": "The CUSTOMER_ID column is a rename of the CUSTOMER column from the RAW_ORDERS table.",
+        "upstream_models": [
+            {
+                "model": "RAW_ORDERS",
+                "column": "CUSTOMER",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_ORDERS",
+        "column": "SUBTOTAL_CENTS",
+        "column Description": "Description not available",
+        "reasoning": "The SUBTOTAL_CENTS column is a simple copy of the SUBTOTAL column from the RAW_ORDERS table, with no transformation applied.",
+        "upstream_models": [
+            {
+                "model": "RAW_ORDERS",
+                "column": "SUBTOTAL",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_ORDERS",
+        "column": "TAX_PAID_CENTS",
+        "column Description": "Description not available",
+        "reasoning": "The TAX_PAID_CENTS column is a simple copy of the TAX_PAID column from the RAW_ORDERS table, with no transformation applied.",
+        "upstream_models": [
+            {
+                "model": "RAW_ORDERS",
+                "column": "TAX_PAID",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_ORDERS",
+        "column": "ORDER_TOTAL_CENTS",
+        "column Description": "Description not available",
+        "reasoning": "The ORDER_TOTAL_CENTS column is a simple copy of the ORDER_TOTAL column from the RAW_ORDERS table, with no transformation applied.",
+        "upstream_models": [
+            {
+                "model": "RAW_ORDERS",
+                "column": "ORDER_TOTAL",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_ORDERS",
+        "column": "SUBTOTAL",
+        "column Description": "Description not available",
+        "reasoning": "The SUBTOTAL column is transformed from the SUBTOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+        "upstream_models": [
+            {
+                "model": "RAW_ORDERS",
+                "column": "SUBTOTAL",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_ORDERS",
+        "column": "TAX_PAID",
+        "column Description": "Description not available",
+        "reasoning": "The TAX_PAID column is transformed from the TAX_PAID column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+        "upstream_models": [
+            {
+                "model": "RAW_ORDERS",
+                "column": "TAX_PAID",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_ORDERS",
+        "column": "ORDER_TOTAL",
+        "column Description": "Description not available",
+        "reasoning": "The ORDER_TOTAL column is transformed from the ORDER_TOTAL column in the RAW_ORDERS table by applying the CENTS_TO_DOLLARS function, which likely converts the value from cents to dollars.",
+        "upstream_models": [
+            {
+                "model": "RAW_ORDERS",
+                "column": "ORDER_TOTAL",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_ORDERS",
+        "column": "ORDERED_AT",
+        "column Description": "Description not available",
+        "reasoning": "The ORDERED_AT column is transformed from the ORDERED_AT column in the RAW_ORDERS table by applying the DBT.DATE_TRUNC function, which likely truncates the date to the day level.",
+        "upstream_models": [
+            {
+                "model": "RAW_ORDERS",
+                "column": "ORDERED_AT",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_ORDER_ITEMS",
+        "column": "ORDER_ITEM_ID",
+        "column Description": "Description not available",
+        "reasoning": "The column 'ORDER_ITEM_ID' is simply a renamed version of the 'ID' column from the 'RAW_ITEMS' table.",
+        "upstream_models": [
+            {
+                "model": "RAW_ITEMS",
+                "column": "ID",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_ORDER_ITEMS",
+        "column": "ORDER_ID",
+        "column Description": "Description not available",
+        "reasoning": "The column 'ORDER_ID' is selected directly from the 'RAW_ITEMS' table without any transformations.",
+        "upstream_models": [
+            {
+                "model": "RAW_ITEMS",
+                "column": "ORDER_ID",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_ORDER_ITEMS",
+        "column": "PRODUCT_ID",
+        "column Description": "Description not available",
+        "reasoning": "The column 'PRODUCT_ID' is a renamed version of the 'SKU' column from the 'RAW_ITEMS' table, indicating that the SKU is being treated as a product identifier.",
+        "upstream_models": [
+            {
+                "model": "RAW_ITEMS",
+                "column": "SKU",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_CUSTOMERS",
+        "column": "CUSTOMER_ID",
+        "column Description": "Description not available",
+        "reasoning": "The CUSTOMER_ID column is a direct copy of the ID column from the RAW_CUSTOMERS table, with a simple rename to make the column name more descriptive.",
+        "upstream_models": [
+            {
+                "model": "RAW_CUSTOMERS",
+                "column": "ID",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_CUSTOMERS",
+        "column": "CUSTOMER_NAME",
+        "column Description": "Description not available",
+        "reasoning": "The CUSTOMER_NAME column is a direct copy of the NAME column from the RAW_CUSTOMERS table, with a simple rename to make the column name more descriptive.",
+        "upstream_models": [
+            {
+                "model": "RAW_CUSTOMERS",
+                "column": "NAME",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_LOCATIONS",
+        "column": "LOCATION_ID",
+        "column Description": "Description not available",
+        "reasoning": "The ID column from the RAW_STORES table is simply renamed to LOCATION_ID.",
+        "upstream_models": [
+            {
+                "model": "RAW_STORES",
+                "column": "ID",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_LOCATIONS",
+        "column": "LOCATION_NAME",
+        "column Description": "Description not available",
+        "reasoning": "The NAME column from the RAW_STORES table is simply renamed to LOCATION_NAME.",
+        "upstream_models": [
+            {
+                "model": "RAW_STORES",
+                "column": "NAME",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_LOCATIONS",
+        "column": "TAX_RATE",
+        "column Description": "Description not available",
+        "reasoning": "The TAX_RATE column from the RAW_STORES table is selected as-is, with no transformation.",
+        "upstream_models": [
+            {
+                "model": "RAW_STORES",
+                "column": "TAX_RATE",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    },
+    {
+        "model": "STG_LOCATIONS",
+        "column": "OPENED_DATE",
+        "column Description": "Description not available",
+        "reasoning": "The OPENED_AT column from the RAW_STORES table is truncated to the day level using the DBT.DATE_TRUNC function and then wrapped in a STRUCT to create a new column named OPENED_DATE.",
+        "upstream_models": [
+            {
+                "model": "RAW_STORES",
+                "column": "OPENED_AT",
+                "column Description": "Description not available",
+                "reasoning": "Reasoning not available",
+                "upstream_models": []
+            }
+        ]
+    }
+]
