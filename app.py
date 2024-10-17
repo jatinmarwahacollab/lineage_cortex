@@ -4,8 +4,31 @@ from graphviz import Digraph
 import pandas as pd
 import warnings
 
-# Suppress deprecation warnings in Python (though it won't hide Streamlit warnings in UI)
+# Ensure page config is the first Streamlit command
+st.set_page_config(layout="wide")
+
+# Suppress deprecation warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+# CSS to change the multi-select color
+st.markdown(
+    """
+    <style>
+    /* Change the multi-select box and its dropdown background color to gray */
+    div[data-baseweb="select"] {
+        background-color: #f0f0f0;
+    }
+    div[data-baseweb="select"] > div {
+        background-color: #f0f0f0;
+    }
+    /* Change the multi-select options background color to gray */
+    ul[role="listbox"] {
+        background-color: #f0f0f0;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # Define the Node class to represent each entity in the lineage
 class Node:
@@ -23,6 +46,7 @@ class Node:
         self.children.append(child_node)
 
     def get_metadata(self):
+        """Returns metadata for the node in a dictionary format."""
         return {
             'Name': self.name,
             'Type': self.type,
@@ -35,6 +59,7 @@ class Node:
 
 # Function to build the lineage tree from the JSON data
 def build_lineage_tree(field_data):
+    # Top node: The selected field
     root_node = Node(
         name=field_data['name'],
         node_type='Field',
@@ -42,6 +67,7 @@ def build_lineage_tree(field_data):
         lineage_type='Reporting Side Lineage'
     )
 
+    # Iterate through each upstream column inside upstreamFields
     for upstream_column in field_data.get('upstreamColumns', []):
         column_name = upstream_column['name']
         table_name = ', '.join([table['name'] for table in upstream_column.get('upstreamTables', [])])
@@ -53,10 +79,17 @@ def build_lineage_tree(field_data):
         )
         root_node.add_child(column_node)
 
-        for db_lineage in upstream_column.get('dblineage', []):
+        # Process the database lineage for each column
+        db_lineage = upstream_column.get('database_lineage', None)
+        if db_lineage:
             lineage_node = build_db_lineage(db_lineage, set())
             if lineage_node:
                 column_node.add_child(lineage_node)
+
+    # Process nested upstreamFields
+    for upstream_field in field_data.get('upstreamFields', []):
+        upstream_field_node = build_lineage_tree(upstream_field)
+        root_node.add_child(upstream_field_node)
 
     return root_node
 
@@ -84,11 +117,11 @@ def build_db_lineage(db_lineage, visited):
     return node
 
 # Function to create the lineage graph using Graphviz
-def create_graph(node, theme, metadata_buttons):
+def create_graph(node, theme):
     dot = Digraph(comment='Data Lineage')
-    dot.attr('graph', bgcolor=theme.bgcolor, rankdir='LR')
+    dot.attr('graph', bgcolor=theme.bgcolor, rankdir='LR')  # Set layout to left-to-right
     dot.attr('node', style=theme.style, shape=theme.shape, fillcolor=theme.fillcolor,
-              color=theme.color, fontcolor=theme.tcolor, width='2.16', height='0.72')
+              color=theme.color, fontcolor=theme.tcolor, width='2.16', height='0.72')  # Increased size by 20%
     dot.attr('edge', color=theme.pencolor, penwidth=theme.penwidth)
 
     def add_nodes_edges(current_node):
@@ -97,10 +130,14 @@ def create_graph(node, theme, metadata_buttons):
             label += f"\n({current_node.table_name})"
         elif current_node.type != 'Field':
             label += f"\n({current_node.type})"
+
+        # Add a vertical space between column/table name and the lineage type label
         label += f"\n\n{current_node.lineage_type}"
 
-        dot.node(current_node.name + current_node.table_name, label=label)
-        metadata_buttons[current_node.name] = current_node.get_metadata()
+        # Add a tooltip for metadata on hover
+        metadata = current_node.get_metadata()
+        hover_text = "\n".join(f"{key}: {value}" for key, value in metadata.items())
+        dot.node(current_node.name + current_node.table_name, label=label, tooltip=hover_text)
 
         for child in current_node.children:
             dot.edge(current_node.name + current_node.table_name, child.name + child.table_name)
@@ -130,7 +167,6 @@ def getThemes():
     }
 
 # Streamlit app starts here
-st.set_page_config(layout="wide")
 st.title('Data Lineage Visualization')
 
 # Sidebar options
@@ -153,53 +189,42 @@ workbook_names = [workbook['name'] for workbook in lineage_data.get('workbooks',
 selected_workbook = st.sidebar.selectbox('Select a Workbook', workbook_names)
 
 # Find the selected workbook data
-selected_workbook_data = next((workbook for workbook in lineage_data.get('workbooks', []) if workbook['name'] == selected_workbook), None)
-if not selected_workbook_data:
-    st.error("No data found for the selected workbook.")
-    st.stop()
+selected_workbook_data = next(workbook for workbook in lineage_data.get('workbooks', []) if workbook['name'] == selected_workbook)
 
-# Extract dashboards
+# Extract dashboards based on the selected workbook
 dashboard_names = [dashboard['name'] for dashboard in selected_workbook_data.get('dashboards', [])]
 selected_dashboard = st.sidebar.selectbox('Select a Dashboard', dashboard_names)
 
 # Find the selected dashboard data
-selected_dashboard_data = next((dashboard for dashboard in selected_workbook_data.get('dashboards', []) if dashboard['name'] == selected_dashboard), None)
-if not selected_dashboard_data:
-    st.error("No data found for the selected dashboard.")
-    st.stop()
+selected_dashboard_data = next(dashboard for dashboard in selected_workbook_data.get('dashboards', []) if dashboard['name'] == selected_dashboard)
+
+# Extract sheets based on the selected dashboard
+datasource_names = [datasource['name'] for datasource in selected_dashboard_data.get('upstreamDatasources', [])]
+selected_datasource = st.sidebar.selectbox('Select a Datasource', datasource_names)
+
+# Find the selected datasource data
+selected_datasource_data = next(datasource for datasource in selected_dashboard_data.get('upstreamDatasources', []) if datasource['name'] == selected_datasource)
 
 # Extract sheets
-sheet_names = [sheet['name'] for sheet in selected_dashboard_data.get('sheets', [])]
+sheet_names = [sheet['name'] for sheet in selected_datasource_data.get('sheets', [])]
 selected_sheet = st.sidebar.selectbox('Select a Sheet', sheet_names)
 
 # Find the selected sheet data
-selected_sheet_data = next((sheet for sheet in selected_dashboard_data.get('sheets', []) if sheet['name'] == selected_sheet), None)
-if not selected_sheet_data:
-    st.error("No data found for the selected sheet.")
-    st.stop()
+selected_sheet_data = next(sheet for sheet in selected_datasource_data.get('sheets', []) if sheet['name'] == selected_sheet)
 
 # Extract fields from the selected sheet
-fields = selected_sheet_data.get('sheetFieldInstances', [])
-if not fields:
-    st.write("No fields available for the selected sheet.")
-else:
-    for field in fields:
-        st.write(f"### {field['name']}")
-        
-        # Expander for lineage graph
-        metadata_buttons = {}
-        with st.expander("Show Lineage Graph"):
+fields = selected_sheet_data.get('upstreamFields', [])
+field_names = [field['name'] for field in fields]
+
+# Multi-select field filter
+selected_fields = st.sidebar.multiselect('Select Fields', field_names, default=field_names)
+
+# Display lineage graphs for the selected fields
+for field in fields:
+    if field['name'] in selected_fields:
+        with st.expander(f"{field['name']}", expanded=True):
             selected_node = build_lineage_tree(field)
-            dot = create_graph(selected_node, theme, metadata_buttons)
+
+            # Display lineage graph inside the expander
+            dot = create_graph(selected_node, theme)
             st.graphviz_chart(dot, use_container_width=True)
-
-            # Create columns dynamically based on number of buttons (nodes)
-            num_buttons = len(metadata_buttons)
-            cols = st.columns(num_buttons)  # Create 'num_buttons' number of columns
-
-            # Place each button in a respective column
-            for i, (node_name, metadata) in enumerate(metadata_buttons.items()):
-                with cols[i]:  # Place each button in its column
-                    if st.button("Show Metadata", key=f"metadata_{node_name}_{field['name']}", use_container_width=False):
-                        metadata_df = pd.DataFrame(list(metadata.items()), columns=['Field', 'Value'])
-                        st.table(metadata_df)
