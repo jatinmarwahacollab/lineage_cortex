@@ -95,11 +95,15 @@ def build_lineage_tree(field_data):
 
 # Function to build lineage nodes recursively from dblineage part
 def build_db_lineage(db_lineage, visited):
+    # Use both model and column name to create a unique node identifier
     node_id = f"{db_lineage['model']}.{db_lineage['column']}"
+
+    # Check if this node was already visited to avoid circular references
     if node_id in visited:
-        return None
+        return None  # Avoid re-adding the same node, preventing loops
     visited.add(node_id)
 
+    # Create the node with proper labels
     node = Node(
         name=db_lineage['column'],
         node_type='DB Column',
@@ -109,12 +113,14 @@ def build_db_lineage(db_lineage, visited):
         lineage_type='Database Side Lineage'
     )
 
+    # Recursively build lineage for upstream models
     for upstream_model in db_lineage.get('upstream_models', []):
         upstream_node = build_db_lineage(upstream_model, visited)
         if upstream_node:
             node.add_child(upstream_node)
 
     return node
+
 
 # Function to create the lineage graph using Graphviz
 def create_graph(node, theme):
