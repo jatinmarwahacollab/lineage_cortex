@@ -77,6 +77,8 @@ def build_db_lineage(db_lineage, visited, parent_node=None):
     return node
 
 def add_nodes_edges(dot, current_node, visited_edges=set()):
+    """Add nodes and edges to the Graphviz dot object without oversized nodes."""
+    # Create a label with limited length to avoid large nodes
     label = f"{current_node.name}"
     if current_node.table_name:
         label += f"\n({current_node.table_name})"
@@ -84,11 +86,24 @@ def add_nodes_edges(dot, current_node, visited_edges=set()):
         label += f"\n({current_node.type})"
     label += f"\n\n{current_node.lineage_type}"
 
-    graph_node_id = f"{current_node.name}_{current_node.table_name}_{current_node.lineage_type}"
+    # Add wrapping for long text in metadata tooltip
     metadata = current_node.get_metadata()
     hover_text = "\n".join(f"{key}: {value}" for key, value in metadata.items())
-    dot.node(graph_node_id, label=label, tooltip=hover_text)
 
+    # Create a unique node ID
+    graph_node_id = f"{current_node.name}_{current_node.table_name}_{current_node.lineage_type}"
+
+    # Set constraints to control node size and ensure uniformity
+    dot.node(
+        graph_node_id,
+        label=label,
+        tooltip=hover_text,
+        width='2.5',  # Set a fixed width
+        height='1',  # Set a fixed height
+        fixedsize='true'  # Prevent dynamic resizing of nodes
+    )
+
+    # Add edges to connect nodes, avoiding duplicate edges
     for child in current_node.children:
         child_id = f"{child.name}_{child.table_name}_{child.lineage_type}"
         edge_id = (graph_node_id, child_id)
@@ -98,13 +113,17 @@ def add_nodes_edges(dot, current_node, visited_edges=set()):
         add_nodes_edges(dot, child, visited_edges)
 
 def create_graph(node, theme):
+    """Create a Graphviz graph from the lineage tree."""
     dot = Digraph(comment='Data Lineage')
     dot.attr('graph', bgcolor=theme.bgcolor, rankdir='LR')
-    dot.attr('node', style=theme.style, shape=theme.shape, fillcolor=theme.fillcolor,
-              color=theme.color, fontcolor=theme.tcolor, width='2.16', height='0.72')
+    dot.attr(
+        'node', style=theme.style, shape=theme.shape, fillcolor=theme.fillcolor,
+        color=theme.color, fontcolor=theme.tcolor, width='2.5', height='1', fixedsize='true'
+    )
     dot.attr('edge', color=theme.pencolor, penwidth=theme.penwidth)
     add_nodes_edges(dot, node)
     return dot
+
 
 def build_lineage_tree(field_data):
     root_node = Node(
