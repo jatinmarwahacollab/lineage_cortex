@@ -5,7 +5,7 @@ import pandas as pd
 # =============================================================================
 # REPLACE THESE WITH YOUR TABLEAU ONLINE DETAILS
 # =============================================================================
-instance = "prod-apnortheast-a"
+instance = ""
 api_version = "3.24"
 auth_url = f"https://{instance}.online.tableau.com/api/{api_version}/auth/signin"
 
