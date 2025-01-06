@@ -146,9 +146,17 @@ def get_calculated_field_details(field_ids):
 
 # =============================================================================
 # 3. RECURSIVE TRAVERSAL FOR CALCULATED FIELDS
-#    (NO CHANGES TO THE LOGIC)
 # =============================================================================
-def traverse_upstream_fields(current_field_id, calculated_fields_dict, lineage_rows, context):
+def traverse_upstream_fields(current_field_id, calculated_fields_dict, lineage_rows, context, visited):
+    """
+    Recursive traversal of calculated fields, with duplicate prevention.
+    """
+    # Skip if already visited
+    if current_field_id in visited:
+        return
+    visited.add(current_field_id)  # Mark this field as visited
+
+    # If no data => unknown
     if current_field_id not in calculated_fields_dict:
         lineage_rows.append({
             "workbook_name": context["workbook_name"],
@@ -172,7 +180,7 @@ def traverse_upstream_fields(current_field_id, calculated_fields_dict, lineage_r
     cal_field_formula = cal_field_data["formula"]
     upstreams = cal_field_data.get("fields", [])
 
-    # If no upstream => might be a constant/noUpstream
+    # If no upstream => constant/noUpstream
     if not upstreams:
         lineage_rows.append({
             "workbook_name": context["workbook_name"],
@@ -191,171 +199,42 @@ def traverse_upstream_fields(current_field_id, calculated_fields_dict, lineage_r
         })
         return
 
-    # Otherwise, iterate
+    # Process upstream fields
     for upstream_field in upstreams:
         up_type = upstream_field["__typename"]
         up_name = upstream_field["name"]
         up_id = upstream_field["id"]
 
+        # Flatten upstream details (tables, columns, databases)
         up_tables = upstream_field.get("upstreamTables", [])
-        up_cols   = upstream_field.get("upstreamColumns", [])
-        up_dbs    = upstream_field.get("upstreamDatabases", [])
-        dsf_upstream_fields = upstream_field.get("upstreamFields", []) or []
+        up_cols = upstream_field.get("upstreamColumns", [])
+        up_dbs = upstream_field.get("upstreamDatabases", [])
 
+        # Add row for this upstream field
+        lineage_rows.append({
+            "workbook_name": context["workbook_name"],
+            "worksheet_name": context["sheet_name"],
+            "data_source_name": context["data_source_name"],
+            "dashboard_name": context["dashboard_name"],
+            "field_name": context["parent_field_name"],
+            "field_type": "CalculatedField",
+            "upstream_field_name": up_name,
+            "upstream_field_type": up_type,
+            "formula": cal_field_formula,
+            "upstream_column": ", ".join(col["name"] for col in up_cols) if up_cols else "",
+            "upstream_table": ", ".join(tbl["name"] for tbl in up_tables) if up_tables else "",
+            "upstream_schema": "",
+            "upstream_database": ", ".join(db["name"] for db in up_dbs) if up_dbs else ""
+        })
+
+        # Recursive traversal for calculated fields
         if up_type == "CalculatedField":
-            lineage_rows.append({
-                "workbook_name": context["workbook_name"],
-                "worksheet_name": context["sheet_name"],
-                "data_source_name": context["data_source_name"],
-                "dashboard_name": context["dashboard_name"],
-                "field_name": context["parent_field_name"],
-                "field_type": "CalculatedField",
-                "upstream_field_name": up_name,
-                "upstream_field_type": "CalculatedField",
-                "formula": cal_field_formula,
-                "upstream_column": "",
-                "upstream_table": "",
-                "upstream_schema": "",
-                "upstream_database": ""
-            })
-            new_ctx = context.copy()
-            new_ctx["parent_field_name"] = up_name
-            traverse_upstream_fields(up_id, calculated_fields_dict, lineage_rows, new_ctx)
-
-        elif up_type == "DatasourceField":
-            if not (up_tables or up_cols or up_dbs):
-                lineage_rows.append({
-                    "workbook_name": context["workbook_name"],
-                    "worksheet_name": context["sheet_name"],
-                    "data_source_name": context["data_source_name"],
-                    "dashboard_name": context["dashboard_name"],
-                    "field_name": context["parent_field_name"],
-                    "field_type": "CalculatedField",
-                    "upstream_field_name": up_name,
-                    "upstream_field_type": "DatasourceField",
-                    "formula": cal_field_formula,
-                    "upstream_column": "",
-                    "upstream_table": "",
-                    "upstream_schema": "",
-                    "upstream_database": ""
-                })
-            else:
-                for tbl in (up_tables or [None]):
-                    for col in (up_cols or [None]):
-                        for db in (up_dbs or [None]):
-                            lineage_rows.append({
-                                "workbook_name": context["workbook_name"],
-                                "worksheet_name": context["sheet_name"],
-                                "data_source_name": context["data_source_name"],
-                                "dashboard_name": context["dashboard_name"],
-                                "field_name": context["parent_field_name"],
-                                "field_type": "CalculatedField",
-                                "upstream_field_name": up_name,
-                                "upstream_field_type": "DatasourceField",
-                                "formula": cal_field_formula,
-                                "upstream_column": col["name"] if col else "",
-                                "upstream_table": tbl["name"] if tbl else "",
-                                "upstream_schema": "",
-                                "upstream_database": db["name"] if db else ""
-                            })
-
-            for dsf_up in dsf_upstream_fields:
-                dsf_up_id   = dsf_up["id"]
-                dsf_up_type = dsf_up["__typename"]
-                dsf_up_name = dsf_up["name"]
-
-                if dsf_up_type == "CalculatedField":
-                    lineage_rows.append({
-                        "workbook_name": context["workbook_name"],
-                        "worksheet_name": context["sheet_name"],
-                        "data_source_name": context["data_source_name"],
-                        "dashboard_name": context["dashboard_name"],
-                        "field_name": up_name,
-                        "field_type": "DatasourceField",
-                        "upstream_field_name": dsf_up_name,
-                        "upstream_field_type": "CalculatedField",
-                        "formula": "",
-                        "upstream_column": "",
-                        "upstream_table": "",
-                        "upstream_schema": "",
-                        "upstream_database": ""
-                    })
-                    new_ctx2 = context.copy()
-                    new_ctx2["parent_field_name"] = dsf_up_name
-                    traverse_upstream_fields(dsf_up_id, calculated_fields_dict, lineage_rows, new_ctx2)
-                else:
-                    lineage_rows.append({
-                        "workbook_name": context["workbook_name"],
-                        "worksheet_name": context["sheet_name"],
-                        "data_source_name": context["data_source_name"],
-                        "dashboard_name": context["dashboard_name"],
-                        "field_name": up_name,
-                        "field_type": "DatasourceField",
-                        "upstream_field_name": dsf_up_name,
-                        "upstream_field_type": dsf_up_type,
-                        "formula": "",
-                        "upstream_column": "",
-                        "upstream_table": "",
-                        "upstream_schema": "",
-                        "upstream_database": ""
-                    })
-
-        elif up_type == "ColumnField":
-            if not (up_tables or up_cols or up_dbs):
-                lineage_rows.append({
-                    "workbook_name": context["workbook_name"],
-                    "worksheet_name": context["sheet_name"],
-                    "data_source_name": context["data_source_name"],
-                    "dashboard_name": context["dashboard_name"],
-                    "field_name": context["parent_field_name"],
-                    "field_type": "CalculatedField",
-                    "upstream_field_name": up_name,
-                    "upstream_field_type": "ColumnField",
-                    "formula": cal_field_formula,
-                    "upstream_column": "",
-                    "upstream_table": "",
-                    "upstream_schema": "",
-                    "upstream_database": ""
-                })
-            else:
-                for tbl in (up_tables or [None]):
-                    for col in (up_cols or [None]):
-                        for db in (up_dbs or [None]):
-                            lineage_rows.append({
-                                "workbook_name": context["workbook_name"],
-                                "worksheet_name": context["sheet_name"],
-                                "data_source_name": context["data_source_name"],
-                                "dashboard_name": context["dashboard_name"],
-                                "field_name": context["parent_field_name"],
-                                "field_type": "CalculatedField",
-                                "upstream_field_name": up_name,
-                                "upstream_field_type": "ColumnField",
-                                "formula": cal_field_formula,
-                                "upstream_column": col["name"] if col else "",
-                                "upstream_table": tbl["name"] if tbl else "",
-                                "upstream_schema": "",
-                                "upstream_database": db["name"] if db else ""
-                            })
-
-        else:
-            lineage_rows.append({
-                "workbook_name": context["workbook_name"],
-                "worksheet_name": context["sheet_name"],
-                "data_source_name": context["data_source_name"],
-                "dashboard_name": context["dashboard_name"],
-                "field_name": context["parent_field_name"],
-                "field_type": "CalculatedField",
-                "upstream_field_name": up_name,
-                "upstream_field_type": up_type,
-                "formula": cal_field_formula,
-                "upstream_column": "",
-                "upstream_table": "",
-                "upstream_schema": "",
-                "upstream_database": ""
-            })
+            new_context = context.copy()
+            new_context["parent_field_name"] = up_name
+            traverse_upstream_fields(up_id, calculated_fields_dict, lineage_rows, new_context, visited)
 
 # =============================================================================
-# 4. PROCESS SINGLE WORKBOOK (ADD 'primary_field' FOR SHEET FIELD INSTANCES ONLY)
+# 4. PROCESS SINGLE WORKBOOK (FIX DUPLICATES WITH VISITED TRACKING)
 # =============================================================================
 def process_single_workbook(wb_name):
     wb_json_data = get_workbook_details(wb_name)
@@ -367,7 +246,7 @@ def process_single_workbook(wb_name):
     workbook_obj = workbooks_data[0]
     workbook_name = workbook_obj["name"]
 
-    # Gather CalcField IDs from dashboards & sheet fields
+    # Gather calculated field IDs
     dashboards = workbook_obj.get("dashboards", [])
     calc_field_ids = []
     for dash in dashboards:
@@ -385,7 +264,7 @@ def process_single_workbook(wb_name):
 
     calc_field_ids = list(set(calc_field_ids))
 
-    # Fetch calc fields in batch
+    # Batch fetch calculated fields
     calculated_fields_details = get_calculated_field_details(calc_field_ids)
     calc_fields_data = calculated_fields_details.get("data", {}).get("calculatedFields", [])
     calc_field_lookup = {}
@@ -397,8 +276,9 @@ def process_single_workbook(wb_name):
             "fields": cfd.get("fields", [])
         }
 
-    # Build lineage
+    # Build lineage data
     lineage_data = []
+    visited = set()  # Track visited fields to prevent duplicates
     for sheet in sheets:
         sheet_name = sheet["name"]
         dash_names = [d["name"] for d in sheet.get("containedInDashboards", [])] or ["NoDashboard"]
@@ -414,150 +294,38 @@ def process_single_workbook(wb_name):
             upstream_databases = sf.get("upstreamDatabases", [])
             ds_upstream_fields = sf.get("upstreamFields", []) or []
 
-            # For each referencing dashboard, produce rows
             for dash_name in dash_names:
-                # We add "primary_field": True ONLY for these sheet-level rows
-                # (the recursion remains unchanged and won't have this key).
-                primary_row_base = {
+                # Add primary field record
+                lineage_data.append({
                     "workbook_name": workbook_name,
                     "worksheet_name": sheet_name,
                     "data_source_name": ", ".join(ds["name"] for ds in upstream_datasources),
                     "dashboard_name": dash_name,
                     "field_name": field_name,
                     "field_type": field_type,
-                    "primary_field": True  # <-- NEW
-                }
+                    "primary_field": True,  # Mark as primary
+                    "upstream_field_name": "",
+                    "upstream_field_type": "",
+                    "formula": "",
+                    "upstream_column": "",
+                    "upstream_table": "",
+                    "upstream_schema": "",
+                    "upstream_database": ""
+                })
 
-                if field_type == "DatasourceField":
-                    if ds_upstream_fields:
-                        for uf in ds_upstream_fields:
-                            uf_type = uf["__typename"]
-                            uf_name = uf["name"]
-                            uf_id = uf["id"]
-
-                            row = primary_row_base.copy()
-                            row.update({
-                                "upstream_field_name": uf_name,
-                                "upstream_field_type": uf_type,
-                                "formula": "",
-                                "upstream_column": "",
-                                "upstream_table": "",
-                                "upstream_schema": "",
-                                "upstream_database": ""
-                            })
-
-                            if uf_type == "CalculatedField":
-                                # Fill formula if we have it
-                                row["formula"] = calc_field_lookup.get(uf_id, {}).get("formula", "")
-                                lineage_data.append(row)
-
-                                # Then do recursion
-                                context = {
-                                    "workbook_name": workbook_name,
-                                    "sheet_name": sheet_name,
-                                    "data_source_name": row["data_source_name"],
-                                    "dashboard_name": dash_name,
-                                    "parent_field_name": uf_name
-                                }
-                                traverse_upstream_fields(uf_id, calc_field_lookup, lineage_data, context)
-                            else:
-                                # Possibly a ColumnField or DSF, flatten references if needed
-                                if not (upstream_tables or upstream_columns or upstream_databases):
-                                    lineage_data.append(row)
-                                else:
-                                    for tbl in (upstream_tables or [None]):
-                                        for col in (upstream_columns or [None]):
-                                            for db in (upstream_databases or [None]):
-                                                row2 = row.copy()
-                                                row2.update({
-                                                    "upstream_column": col["name"] if col else "",
-                                                    "upstream_table": tbl["name"] if tbl else "",
-                                                    "upstream_schema": tbl["schema"] if tbl else "",
-                                                    "upstream_database": db["name"] if db else ""
-                                                })
-                                                lineage_data.append(row2)
-                    else:
-                        # Flatten if no upstream fields
-                        row = primary_row_base.copy()
-                        row.update({
-                            "upstream_field_name": "",
-                            "upstream_field_type": "",
-                            "formula": "",
-                            "upstream_column": "",
-                            "upstream_table": "",
-                            "upstream_schema": "",
-                            "upstream_database": ""
-                        })
-                        if not (upstream_tables or upstream_columns or upstream_databases):
-                            lineage_data.append(row)
-                        else:
-                            for tbl in (upstream_tables or [None]):
-                                for col in (upstream_columns or [None]):
-                                    for db in (upstream_databases or [None]):
-                                        row2 = row.copy()
-                                        row2.update({
-                                            "upstream_column": col["name"] if col else "",
-                                            "upstream_table": tbl["name"] if tbl else "",
-                                            "upstream_schema": tbl["schema"] if tbl else "",
-                                            "upstream_database": db["name"] if db else ""
-                                        })
-                                        lineage_data.append(row2)
-
-                elif field_type == "CalculatedField":
-                    if field_id not in calc_field_lookup:
-                        # Possibly unknown
-                        row = primary_row_base.copy()
-                        row.update({
-                            "upstream_field_name": "UNKNOWN",
-                            "upstream_field_type": "UNKNOWN",
-                            "formula": "",
-                            "upstream_column": "",
-                            "upstream_table": "",
-                            "upstream_schema": "",
-                            "upstream_database": ""
-                        })
-                        lineage_data.append(row)
-                    else:
-                        # We can produce one row for the top-level calc
-                        row = primary_row_base.copy()
-                        row.update({
-                            "upstream_field_name": calc_field_lookup[field_id]["name"],
-                            "upstream_field_type": "CalculatedField",
-                            "formula": calc_field_lookup[field_id]["formula"],
-                            "upstream_column": "",
-                            "upstream_table": "",
-                            "upstream_schema": "",
-                            "upstream_database": ""
-                        })
-                        lineage_data.append(row)
-
-                        # Then do recursion
-                        ctx = {
+                # Process upstream fields
+                for uf in ds_upstream_fields:
+                    if uf["__typename"] == "CalculatedField":
+                        context = {
                             "workbook_name": workbook_name,
                             "sheet_name": sheet_name,
-                            "data_source_name": row["data_source_name"],
+                            "data_source_name": ", ".join(ds["name"] for ds in upstream_datasources),
                             "dashboard_name": dash_name,
-                            "parent_field_name": calc_field_lookup[field_id]["name"]
+                            "parent_field_name": uf["name"]
                         }
-                        traverse_upstream_fields(field_id, calc_field_lookup, lineage_data, ctx)
+                        traverse_upstream_fields(uf["id"], calc_field_lookup, lineage_data, context, visited)
 
-                else:
-                    # Some other type
-                    row = primary_row_base.copy()
-                    row.update({
-                        "upstream_field_name": "",
-                        "upstream_field_type": "",
-                        "formula": "",
-                        "upstream_column": "",
-                        "upstream_table": "",
-                        "upstream_schema": "",
-                        "upstream_database": ""
-                    })
-                    lineage_data.append(row)
-
-    df_lineage = pd.DataFrame(lineage_data)
-    df_lineage.drop_duplicates(inplace=True)
-    return df_lineage
+    return pd.DataFrame(lineage_data)
 
 # =============================================================================
 # 5. MAIN
