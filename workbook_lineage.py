@@ -328,6 +328,38 @@ def process_single_workbook(wb_name):
     return pd.DataFrame(lineage_data)
 
 # =============================================================================
+# NEW: Fetch all sheetFieldInstances for marking primary fields
+# =============================================================================
+def get_sheet_field_instance_ids(workbook_name):
+    """
+    Fetches all the sheetFieldInstances IDs for the given workbook.
+    This will be used to flag primary fields in the lineage data.
+    """
+    query = f"""
+    {{
+      workbooks(filter: {{name: "{workbook_name}"}}) {{
+        sheets {{
+          sheetFieldInstances {{
+            id
+          }}
+        }}
+      }}
+    }}
+    """
+    response = requests.post(metadata_api_url, json={'query': query}, headers=headers)
+    response.raise_for_status()
+    data = response.json()
+    
+    # Extract all sheetFieldInstance IDs
+    sheet_field_ids = []
+    sheets = data.get("data", {}).get("workbooks", [])[0].get("sheets", [])
+    for sheet in sheets:
+        for field_instance in sheet.get("sheetFieldInstances", []):
+            sheet_field_ids.append(field_instance["id"])
+    
+    return sheet_field_ids
+
+# =============================================================================
 # 5. MAIN
 # =============================================================================
 def main():
@@ -338,11 +370,27 @@ def main():
         wrote_any_data = False
         for wb_name in workbook_names:
             print(f"\nProcessing workbook: {wb_name}")
+            
+            # Step 1: Process workbook and generate lineage data
             df_lineage = process_single_workbook(wb_name)
             if df_lineage.empty:
                 print(f" - No data found or workbook not found: {wb_name}")
                 continue
-
+            
+            # Step 2: Fetch sheetFieldInstance IDs to flag primary fields
+            try:
+                primary_field_ids = get_sheet_field_instance_ids(wb_name)
+                print(f" - Retrieved {len(primary_field_ids)} sheetFieldInstance IDs for primary fields.")
+                
+                # Add a new 'is_primary' column in the lineage dataframe
+                df_lineage["is_primary"] = df_lineage["field_name"].apply(
+                    lambda x: True if x in primary_field_ids else False
+                )
+            except Exception as e:
+                print(f"Error fetching primary field IDs for workbook '{wb_name}': {e}")
+                df_lineage["is_primary"] = False
+            
+            # Step 3: Write lineage data to Excel
             wrote_any_data = True
             safe_sheet_name = wb_name[:31] or "Sheet"
             df_lineage.to_excel(writer, sheet_name=safe_sheet_name, index=False)
@@ -350,7 +398,7 @@ def main():
 
         if not wrote_any_data:
             dummy_df = pd.DataFrame({"No data found": []})
-            dummy_df.to_excel(writer, sheet_name="EmptyResults", index=False)
+            dummy_df.to_excel(writer, "EmptyResults", index=False)
             print(" - Created 'EmptyResults' sheet. No data for any workbook.")
 
     print("\n--- Done. Check lineage_output.xlsx. ---")
@@ -358,3 +406,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
