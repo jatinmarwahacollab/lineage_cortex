@@ -330,17 +330,19 @@ def process_single_workbook(wb_name):
 # =============================================================================
 # NEW: Fetch all sheetFieldInstances for marking primary fields
 # =============================================================================
-def get_sheet_field_instance_ids(workbook_name):
+def get_sheet_field_instances(workbook_name):
     """
-    Fetches all the sheetFieldInstances IDs for the given workbook.
-    This will be used to flag primary fields in the lineage data.
+    Fetches all sheetFieldInstances with their sheet names and field names
+    for the given workbook. This will be used to flag primary fields
+    in the lineage data.
     """
     query = f"""
     {{
       workbooks(filter: {{name: "{workbook_name}"}}) {{
         sheets {{
+          name
           sheetFieldInstances {{
-            id
+            name
           }}
         }}
       }}
@@ -350,14 +352,16 @@ def get_sheet_field_instance_ids(workbook_name):
     response.raise_for_status()
     data = response.json()
     
-    # Extract all sheetFieldInstance IDs
-    sheet_field_ids = []
+    # Extract all sheetFieldInstance names and their sheet names
+    primary_fields = set()
     sheets = data.get("data", {}).get("workbooks", [])[0].get("sheets", [])
     for sheet in sheets:
+        sheet_name = sheet["name"]
         for field_instance in sheet.get("sheetFieldInstances", []):
-            sheet_field_ids.append(field_instance["id"])
+            field_name = field_instance["name"]
+            primary_fields.add((sheet_name, field_name))
     
-    return sheet_field_ids
+    return primary_fields
 
 # =============================================================================
 # 5. MAIN
@@ -377,17 +381,18 @@ def main():
                 print(f" - No data found or workbook not found: {wb_name}")
                 continue
             
-            # Step 2: Fetch sheetFieldInstance IDs to flag primary fields
+            # Step 2: Fetch sheetFieldInstances for flagging primary fields
             try:
-                primary_field_ids = get_sheet_field_instance_ids(wb_name)
-                print(f" - Retrieved {len(primary_field_ids)} sheetFieldInstance IDs for primary fields.")
+                primary_fields = get_sheet_field_instances(wb_name)
+                print(f" - Retrieved {len(primary_fields)} sheetFieldInstances for primary fields.")
                 
                 # Add a new 'is_primary' column in the lineage dataframe
-                df_lineage["is_primary"] = df_lineage["field_name"].apply(
-                    lambda x: True if x in primary_field_ids else False
+                df_lineage["is_primary"] = df_lineage.apply(
+                    lambda row: (row["worksheet_name"], row["field_name"]) in primary_fields,
+                    axis=1
                 )
             except Exception as e:
-                print(f"Error fetching primary field IDs for workbook '{wb_name}': {e}")
+                print(f"Error fetching primary field instances for workbook '{wb_name}': {e}")
                 df_lineage["is_primary"] = False
             
             # Step 3: Write lineage data to Excel
@@ -406,4 +411,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
